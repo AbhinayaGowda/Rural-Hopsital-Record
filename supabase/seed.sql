@@ -1,0 +1,2 @@
+-- Seed data placeholder. Add dev data here after schema is finalized.
+-- Run via: supabase db reset (wipes + re-runs all migrations + this file)
