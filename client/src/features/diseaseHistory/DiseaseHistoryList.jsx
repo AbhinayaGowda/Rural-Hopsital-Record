@@ -12,7 +12,7 @@ export default function DiseaseHistoryList({ memberId }) {
   const { session } = useAuth();
   const { data, isLoading } = useQuery({
     queryKey: ['disease-history', memberId],
-    queryFn: () => diseaseHistoryApi.list(memberId, { limit: 50, offset: 0 }, session.access_token),
+    queryFn: () => diseaseHistoryApi.list(memberId, { limit: 50, offset: 0 }),
     enabled: !!session,
   });
 

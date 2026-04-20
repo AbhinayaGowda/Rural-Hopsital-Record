@@ -19,9 +19,9 @@ function reducer(state, action) {
 export function AuthProvider({ children }) {
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  const fetchProfile = useCallback(async (token) => {
+  const fetchProfile = useCallback(async () => {
     try {
-      const profile = await apiFetch('/profiles/me', { token });
+      const profile = await apiFetch('/profiles/me');
       dispatch({ type: 'SET_PROFILE', profile });
     } catch {
       // profile fetch failure is non-fatal — session still valid
@@ -31,12 +31,12 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       dispatch({ type: 'SET_SESSION', session });
-      if (session) fetchProfile(session.access_token);
+      if (session) fetchProfile();
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       dispatch({ type: 'SET_SESSION', session });
-      if (session) fetchProfile(session.access_token);
+      if (session) fetchProfile();
       else dispatch({ type: 'CLEAR' });
     });
 

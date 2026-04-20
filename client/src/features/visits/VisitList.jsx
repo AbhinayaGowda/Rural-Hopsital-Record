@@ -10,7 +10,7 @@ export default function VisitList({ memberId }) {
   const { session } = useAuth();
   const { data, isLoading } = useQuery({
     queryKey: ['visits', memberId],
-    queryFn: () => visitsApi.list(memberId, { limit: 50, offset: 0 }, session.access_token),
+    queryFn: () => visitsApi.list(memberId, { limit: 50, offset: 0 }),
     enabled: !!session,
   });
 

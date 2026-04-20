@@ -14,7 +14,7 @@ export default function AuditLogsPage() {
 
   const { data, isLoading } = useQuery({
     queryKey: ['audit-logs', page],
-    queryFn: () => auditLogsApi.list({ limit, offset: page * limit }, session.access_token),
+    queryFn: () => auditLogsApi.list({ limit, offset: page * limit }),
     enabled: !!session,
   });
 

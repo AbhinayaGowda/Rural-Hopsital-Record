@@ -35,12 +35,12 @@ export default function MemberDetailPage() {
 
   const { data: member, isLoading } = useQuery({
     queryKey: ['member', id],
-    queryFn: () => membersApi.get(id, session.access_token),
+    queryFn: () => membersApi.get(id),
     enabled: !!session,
   });
 
   const updateMutation = useMutation({
-    mutationFn: (payload) => membersApi.update(id, payload, session.access_token),
+    mutationFn: (payload) => membersApi.update(id, payload),
     onSuccess: () => { qc.invalidateQueries({ queryKey: ['member', id] }); setShowEdit(false); },
   });
 

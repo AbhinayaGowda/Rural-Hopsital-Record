@@ -34,12 +34,12 @@ export default function HouseholdsPage() {
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ['households', params],
-    queryFn: () => householdsApi.list(params, session.access_token),
+    queryFn: () => householdsApi.list(params),
     enabled: !!session,
   });
 
   const createMutation = useMutation({
-    mutationFn: (payload) => householdsApi.create(payload, session.access_token),
+    mutationFn: (payload) => householdsApi.create(payload),
     onSuccess: () => { qc.invalidateQueries({ queryKey: ['households'] }); setShowNew(false); },
   });
 

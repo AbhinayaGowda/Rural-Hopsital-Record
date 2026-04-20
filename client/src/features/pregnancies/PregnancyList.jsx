@@ -12,7 +12,7 @@ export default function PregnancyList({ memberId }) {
   const { session } = useAuth();
   const { data, isLoading } = useQuery({
     queryKey: ['pregnancies', memberId],
-    queryFn: () => pregnanciesApi.list(memberId, { limit: 20, offset: 0 }, session.access_token),
+    queryFn: () => pregnanciesApi.list(memberId, { limit: 20, offset: 0 }),
     enabled: !!session,
   });
 

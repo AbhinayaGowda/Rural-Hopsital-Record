@@ -15,7 +15,7 @@ export default function DiseaseHistoryForm({ memberId, onSuccess, onCancel }) {
   const set = (k) => (e) => setF((p) => ({ ...p, [k]: e.target.value }));
 
   const mutation = useMutation({
-    mutationFn: (data) => diseaseHistoryApi.create(memberId, data, session.access_token),
+    mutationFn: (data) => diseaseHistoryApi.create(memberId, data),
     onSuccess: () => { qc.invalidateQueries({ queryKey: ['disease-history', memberId] }); onSuccess(); },
   });
 

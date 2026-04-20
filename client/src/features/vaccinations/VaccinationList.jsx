@@ -21,12 +21,12 @@ export default function VaccinationList({ memberId }) {
 
   const { data, isLoading } = useQuery({
     queryKey: ['vaccinations', memberId],
-    queryFn: () => vaccinationsApi.list(memberId, { limit: 100, offset: 0 }, session.access_token),
+    queryFn: () => vaccinationsApi.list(memberId, { limit: 100, offset: 0 }),
     enabled: !!session,
   });
 
   const batchMutation = useMutation({
-    mutationFn: (doses) => vaccinationsApi.batchAdminister(memberId, { doses }, session.access_token),
+    mutationFn: (doses) => vaccinationsApi.batchAdminister(memberId, { doses }),
     onSuccess: () => { qc.invalidateQueries({ queryKey: ['vaccinations', memberId] }); setShowBatch(false); setSelected({}); },
   });
 

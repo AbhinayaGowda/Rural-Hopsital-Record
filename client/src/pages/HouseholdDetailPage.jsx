@@ -24,23 +24,23 @@ export default function HouseholdDetailPage() {
 
   const { data: household, isLoading: hLoading } = useQuery({
     queryKey: ['household', id],
-    queryFn: () => householdsApi.get(id, session.access_token),
+    queryFn: () => householdsApi.get(id),
     enabled: !!session,
   });
 
   const { data: membersData, isLoading: mLoading } = useQuery({
     queryKey: ['household-members', id],
-    queryFn: () => householdsApi.listMembers(id, { limit: 100, offset: 0 }, session.access_token),
+    queryFn: () => householdsApi.listMembers(id, { limit: 100, offset: 0 }),
     enabled: !!session,
   });
 
   const updateMutation = useMutation({
-    mutationFn: (payload) => householdsApi.update(id, payload, session.access_token),
+    mutationFn: (payload) => householdsApi.update(id, payload),
     onSuccess: () => { qc.invalidateQueries({ queryKey: ['household', id] }); setShowEdit(false); },
   });
 
   const addMemberMutation = useMutation({
-    mutationFn: (payload) => householdsApi.addMember(id, payload, session.access_token),
+    mutationFn: (payload) => householdsApi.addMember(id, payload),
     onSuccess: () => { qc.invalidateQueries({ queryKey: ['household-members', id] }); setShowAddMember(false); },
   });
 

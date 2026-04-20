@@ -14,7 +14,7 @@ export default function VisitForm({ memberId, onSuccess, onCancel }) {
   const set = (k) => (e) => setF((p) => ({ ...p, [k]: e.target.value }));
 
   const mutation = useMutation({
-    mutationFn: (data) => visitsApi.create(memberId, data, session.access_token),
+    mutationFn: (data) => visitsApi.create(memberId, data),
     onSuccess: () => { qc.invalidateQueries({ queryKey: ['visits', memberId] }); onSuccess(); },
   });
 

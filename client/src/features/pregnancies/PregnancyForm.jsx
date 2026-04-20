@@ -15,7 +15,7 @@ export default function PregnancyForm({ memberId, onSuccess, onCancel }) {
   const set = (k) => (e) => setF((p) => ({ ...p, [k]: e.target.value }));
 
   const mutation = useMutation({
-    mutationFn: (data) => pregnanciesApi.create(memberId, data, session.access_token),
+    mutationFn: (data) => pregnanciesApi.create(memberId, data),
     onSuccess: () => { qc.invalidateQueries({ queryKey: ['pregnancies', memberId] }); onSuccess(); },
   });
 
