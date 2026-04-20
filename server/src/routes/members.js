@@ -5,27 +5,28 @@ import * as ctrl from '../controllers/members.js';
 import { listVisits, createVisit } from '../controllers/visits.js';
 import { listDiseaseHistory, createDiseaseHistory } from '../controllers/diseaseHistory.js';
 import { listPregnancies, createPregnancy } from '../controllers/pregnancies.js';
-import { listVaccinations } from '../controllers/vaccinations.js';
+import { listVaccinations, batchAdminister } from '../controllers/vaccinations.js';
 
 const router = Router();
-const staff = requireRole('doctor', 'ground_staff', 'admin');
+const staff   = requireRole('doctor', 'ground_staff', 'admin');
 const writers = requireRole('ground_staff', 'admin');
 const doctors = requireRole('doctor', 'admin');
 
-router.get('/:id', authenticate, staff, ctrl.getOne);
-router.patch('/:id', authenticate, requireRole('doctor', 'ground_staff', 'admin'), ctrl.update);
+router.get('/:id',      authenticate, staff,   ctrl.getOne);
+router.patch('/:id',    authenticate, writers, ctrl.update);   // fix 3: ground_staff + admin only
 router.post('/:id/deceased', authenticate, writers, ctrl.markDeceased);
 
 // nested sub-resources
-router.get('/:memberId/visits', authenticate, staff, listVisits);
+router.get('/:memberId/visits',  authenticate, staff,   listVisits);
 router.post('/:memberId/visits', authenticate, doctors, createVisit);
 
-router.get('/:memberId/disease-history', authenticate, staff, listDiseaseHistory);
-router.post('/:memberId/disease-history', authenticate, staff, createDiseaseHistory);
+router.get('/:memberId/disease-history',  authenticate, staff,   listDiseaseHistory);
+router.post('/:memberId/disease-history', authenticate, doctors, createDiseaseHistory); // fix 1: doctor + admin only
 
-router.get('/:memberId/pregnancies', authenticate, staff, listPregnancies);
-router.post('/:memberId/pregnancies', authenticate, staff, createPregnancy);
+router.get('/:memberId/pregnancies',  authenticate, staff,   listPregnancies);
+router.post('/:memberId/pregnancies', authenticate, doctors, createPregnancy); // fix 2: doctor + admin only
 
-router.get('/:memberId/vaccinations', authenticate, staff, listVaccinations);
+router.get('/:memberId/vaccinations',                    authenticate, staff, listVaccinations);
+router.post('/:memberId/vaccinations/batch-administer',  authenticate, staff, batchAdminister); // fix 8
 
 export default router;

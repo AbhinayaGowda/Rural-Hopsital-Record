@@ -1,11 +1,54 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext.jsx';
+import { useAuth } from './hooks/useAuth.js';
+import { useRole } from './hooks/useRole.js';
+import Layout from './components/Layout.jsx';
+import Spinner from './components/Spinner.jsx';
+import LoginPage from './pages/LoginPage.jsx';
+import HouseholdsPage from './pages/HouseholdsPage.jsx';
+import HouseholdDetailPage from './pages/HouseholdDetailPage.jsx';
+import MemberDetailPage from './pages/MemberDetailPage.jsx';
+import NotificationsPage from './pages/NotificationsPage.jsx';
+import AuditLogsPage from './pages/AuditLogsPage.jsx';
+
+function ProtectedRoute({ children }) {
+  const { session, loading } = useAuth();
+  if (loading) return <Spinner center size="lg" />;
+  if (!session) return <Navigate to="/login" replace />;
+  return <Layout>{children}</Layout>;
+}
+
+function AdminRoute({ children }) {
+  const { session, loading } = useAuth();
+  const { isAdmin } = useRole();
+  if (loading) return <Spinner center size="lg" />;
+  if (!session) return <Navigate to="/login" replace />;
+  if (!isAdmin) return <Navigate to="/households" replace />;
+  return <Layout>{children}</Layout>;
+}
+
+function PublicRoute({ children }) {
+  const { session, loading } = useAuth();
+  if (loading) return <Spinner center size="lg" />;
+  if (session) return <Navigate to="/households" replace />;
+  return children;
+}
 
 export default function App() {
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<div>Rural Hospital — scaffold</div>} />
-      </Routes>
+      <AuthProvider>
+        <Routes>
+          <Route path="/login" element={<PublicRoute><LoginPage /></PublicRoute>} />
+          <Route path="/" element={<Navigate to="/households" replace />} />
+          <Route path="/households" element={<ProtectedRoute><HouseholdsPage /></ProtectedRoute>} />
+          <Route path="/households/:id" element={<ProtectedRoute><HouseholdDetailPage /></ProtectedRoute>} />
+          <Route path="/members/:id" element={<ProtectedRoute><MemberDetailPage /></ProtectedRoute>} />
+          <Route path="/notifications" element={<ProtectedRoute><NotificationsPage /></ProtectedRoute>} />
+          <Route path="/audit-logs" element={<AdminRoute><AuditLogsPage /></AdminRoute>} />
+          <Route path="*" element={<Navigate to="/households" replace />} />
+        </Routes>
+      </AuthProvider>
     </BrowserRouter>
   );
 }

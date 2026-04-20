@@ -12,7 +12,7 @@ export async function listPregnancies(memberId, { limit, offset }) {
     .eq('member_id', memberId)
     .order('created_at', { ascending: false })
     .range(offset, offset + limit - 1);
-  if (error) throw new AppError('DB_ERROR', error.message, 500);
+  if (error) throw new AppError('INTERNAL', error.message, 500);
   return { items: data, total: count, limit, offset };
 }
 
@@ -23,7 +23,7 @@ export async function getPregnancy(id) {
     .eq('id', id)
     .single();
   if (error?.code === 'PGRST116') throw new AppError('NOT_FOUND', 'Pregnancy not found', 404);
-  if (error) throw new AppError('DB_ERROR', error.message, 500);
+  if (error) throw new AppError('INTERNAL', error.message, 500);
   return data;
 }
 
@@ -34,7 +34,7 @@ export async function createPregnancy(memberId, payload, actorId) {
     .select(PREG_COLS)
     .single();
   if (error?.code === '23505') throw new AppError('CONFLICT', 'Member already has an active pregnancy', 409);
-  if (error) throw new AppError('DB_ERROR', error.message, 500);
+  if (error) throw new AppError('INTERNAL', error.message, 500);
   await logAudit({ actorId, action: 'insert', tableName: 'pregnancies', recordId: data.id, newData: data });
   return data;
 }
@@ -47,7 +47,7 @@ export async function updatePregnancy(id, payload, actorId) {
     .eq('id', id)
     .select(PREG_COLS)
     .single();
-  if (error) throw new AppError('DB_ERROR', error.message, 500);
+  if (error) throw new AppError('INTERNAL', error.message, 500);
   await logAudit({ actorId, action: 'update', tableName: 'pregnancies', recordId: id, oldData: existing, newData: data });
   return data;
 }
@@ -59,7 +59,7 @@ export async function listCheckups(pregnancyId, { limit, offset }) {
     .eq('pregnancy_id', pregnancyId)
     .order('checkup_date', { ascending: false })
     .range(offset, offset + limit - 1);
-  if (error) throw new AppError('DB_ERROR', error.message, 500);
+  if (error) throw new AppError('INTERNAL', error.message, 500);
   return { items: data, total: count, limit, offset };
 }
 
@@ -73,7 +73,7 @@ export async function createCheckup(pregnancyId, payload, actorId) {
     .insert({ ...payload, pregnancy_id: pregnancyId, doctor_id: actorId })
     .select(CHECKUP_COLS)
     .single();
-  if (error) throw new AppError('DB_ERROR', error.message, 500);
+  if (error) throw new AppError('INTERNAL', error.message, 500);
   await logAudit({ actorId, action: 'insert', tableName: 'pregnancy_checkups', recordId: data.id, newData: data });
   return data;
 }

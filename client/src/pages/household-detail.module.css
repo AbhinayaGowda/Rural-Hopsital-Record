@@ -1,0 +1,58 @@
+.page { padding: var(--space-6); max-width: 900px; }
+
+.breadcrumb { margin-bottom: var(--space-4); }
+.back { color: var(--color-muted); font-size: 14px; }
+.back:hover { color: var(--color-primary); }
+
+.notFound { color: var(--color-muted); padding: var(--space-6); text-align: center; }
+
+/* ── Household card ─── */
+.card {
+  background: var(--color-bg);
+  border-radius: var(--radius-md);
+  border: 1px solid #e5e7eb;
+  padding: var(--space-6);
+  margin-bottom: var(--space-6);
+}
+.cardHeader { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: var(--space-3); }
+.cardActions { display: flex; align-items: center; gap: var(--space-3); }
+.malaria { font-family: monospace; font-size: 13px; color: var(--color-muted); margin-bottom: 4px; font-weight: 600; }
+.title   { font-size: 18px; font-weight: 700; }
+.meta    { display: flex; flex-wrap: wrap; gap: var(--space-4); margin-top: var(--space-3); font-size: 13px; color: var(--color-muted); }
+.notes   { font-style: italic; }
+
+/* ── Section ─── */
+.section { background: var(--color-bg); border-radius: var(--radius-md); border: 1px solid #e5e7eb; overflow: hidden; }
+.sectionHeader {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: var(--space-4) var(--space-6);
+  border-bottom: 1px solid #e5e7eb;
+}
+.sectionTitle { font-size: 16px; font-weight: 600; }
+.memberCount  { background: #e5e7eb; border-radius: 999px; padding: 2px 8px; font-size: 12px; margin-left: var(--space-2); }
+
+/* ── Member grid ─── */
+.memberGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: var(--space-3);
+  padding: var(--space-4);
+}
+
+.memberCard {
+  display: block;
+  border: 1px solid #e5e7eb;
+  border-radius: var(--radius-md);
+  padding: var(--space-3) var(--space-4);
+  text-decoration: none;
+  color: var(--color-text);
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.memberCard:hover { border-color: var(--color-primary); box-shadow: 0 2px 8px rgba(37,99,235,0.12); }
+
+.memberTop    { display: flex; align-items: center; gap: var(--space-2); flex-wrap: wrap; margin-bottom: 4px; }
+.memberName   { font-weight: 600; font-size: 14px; }
+.memberMeta   { display: flex; gap: var(--space-2); font-size: 12px; color: var(--color-muted); flex-wrap: wrap; margin-bottom: var(--space-1); }
+.memberStatus { }
+
+.empty { padding: var(--space-6); text-align: center; color: var(--color-muted); font-size: 14px; }

@@ -12,7 +12,8 @@ export async function listMembers(householdId, { limit, offset }) {
     .order('is_head', { ascending: false })
     .order('full_name', { ascending: true })
     .range(offset, offset + limit - 1);
-  if (error) throw new AppError('DB_ERROR', error.message, 500);
+  // TODO: count: 'exact' becomes expensive past ~10k rows; switch to estimated count or cursor pagination if this table grows large
+  if (error) throw new AppError('INTERNAL', error.message, 500);
   return { items: data, total: count, limit, offset };
 }
 
@@ -23,7 +24,7 @@ export async function getMember(id) {
     .eq('id', id)
     .single();
   if (error?.code === 'PGRST116') throw new AppError('NOT_FOUND', 'Member not found', 404);
-  if (error) throw new AppError('DB_ERROR', error.message, 500);
+  if (error) throw new AppError('INTERNAL', error.message, 500);
   return data;
 }
 
@@ -35,7 +36,7 @@ export async function createMember(householdId, payload, actorId) {
     .single();
   if (error?.code === '23505') throw new AppError('CONFLICT', 'Aadhaar number already registered', 409);
   if (error?.code === '23P01') throw new AppError('CONFLICT', 'A head member already exists for this household', 409);
-  if (error) throw new AppError('DB_ERROR', error.message, 500);
+  if (error) throw new AppError('INTERNAL', error.message, 500);
   await logAudit({ actorId, action: 'insert', tableName: 'members', recordId: data.id, newData: data });
   return data;
 }
@@ -52,7 +53,7 @@ export async function updateMember(id, payload, actorId) {
     .select(COLS)
     .single();
   if (error?.code === '23505') throw new AppError('CONFLICT', 'Aadhaar number already registered', 409);
-  if (error) throw new AppError('DB_ERROR', error.message, 500);
+  if (error) throw new AppError('INTERNAL', error.message, 500);
   await logAudit({ actorId, action: 'update', tableName: 'members', recordId: id, oldData: existing, newData: data });
   return data;
 }

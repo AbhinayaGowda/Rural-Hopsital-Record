@@ -1,0 +1,31 @@
+.form  { display: flex; flex-direction: column; gap: var(--space-4); }
+.row   { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3); }
+.field { display: flex; flex-direction: column; gap: var(--space-1); }
+.label { font-size: 13px; font-weight: 500; }
+.textarea {
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid #d1d5db;
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  font-family: var(--font-sans);
+  resize: vertical;
+}
+.textarea:focus { outline: none; border-color: var(--color-primary); }
+
+.actions { display: flex; justify-content: flex-end; gap: var(--space-3); padding-top: var(--space-2); }
+.error   { background: #fee2e2; color: #b91c1c; border-radius: var(--radius-sm); padding: var(--space-2) var(--space-3); font-size: 13px; }
+
+.listWrap { }
+.listItem {
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid #f3f4f6;
+  display: flex; gap: var(--space-3); flex-wrap: wrap; align-items: flex-start;
+}
+.listItem:last-child { border-bottom: none; }
+.listMeta  { font-size: 12px; color: var(--color-muted); display: flex; gap: var(--space-3); flex-wrap: wrap; margin-top: 4px; }
+.listEmpty { padding: var(--space-4) var(--space-6); color: var(--color-muted); font-size: 14px; text-align: center; }
+
+.checkRow { display: flex; align-items: center; gap: var(--space-2); font-size: 14px; cursor: pointer; }
+.checkRow input { width: 16px; height: 16px; cursor: pointer; }
+
+@media (max-width: 480px) { .row { grid-template-columns: 1fr; } }

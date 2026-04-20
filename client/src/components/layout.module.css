@@ -1,0 +1,79 @@
+.shell {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* ── Sidebar ──────────────────────────────────────────── */
+.sidebar {
+  width: 220px;
+  min-width: 220px;
+  background: #1e293b;
+  color: #e2e8f0;
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-4) 0;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4) var(--space-4);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  margin-bottom: var(--space-3);
+}
+.brandIcon { font-size: 22px; }
+.brandText { font-size: 15px; font-weight: 700; color: #f1f5f9; }
+
+.nav { display: flex; flex-direction: column; gap: 2px; padding: 0 var(--space-2); flex: 1; }
+
+.link {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  color: #94a3b8;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background 0.15s, color 0.15s;
+  text-decoration: none;
+}
+.link:hover { background: rgba(255,255,255,0.06); color: #f1f5f9; }
+.active     { background: rgba(37,99,235,0.25); color: #93c5fd; }
+.icon       { font-size: 16px; }
+
+.userCard {
+  padding: var(--space-4);
+  border-top: 1px solid rgba(255,255,255,0.08);
+  margin-top: auto;
+}
+.userName { font-size: 13px; font-weight: 600; color: #f1f5f9; margin-bottom: 2px; }
+.userRole { font-size: 12px; color: #64748b; margin-bottom: var(--space-3); }
+.signOut  {
+  background: none; border: 1px solid rgba(255,255,255,0.12);
+  color: #94a3b8; border-radius: var(--radius-sm);
+  padding: 4px 10px; font-size: 12px; cursor: pointer;
+}
+.signOut:hover { border-color: rgba(255,255,255,0.25); color: #f1f5f9; }
+
+/* ── Main ─────────────────────────────────────────────── */
+.main {
+  flex: 1;
+  overflow-y: auto;
+  background: var(--color-surface);
+}
+
+/* ── Mobile ───────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .shell    { flex-direction: column; }
+  .sidebar  { width: 100%; min-width: unset; height: auto; position: static; flex-direction: row; flex-wrap: wrap; padding: var(--space-2); }
+  .brand    { border-bottom: none; margin-bottom: 0; padding: var(--space-2); }
+  .nav      { flex-direction: row; padding: 0; }
+  .userCard { padding: var(--space-2); border-top: none; margin-top: 0; }
+  .userName, .userRole { display: none; }
+}

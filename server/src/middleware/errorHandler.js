@@ -6,7 +6,7 @@ export function errorHandler(err, req, res, _next) {
   res.status(status).json({
     data: null,
     error: {
-      code: err.code ?? 'INTERNAL_ERROR',
+      code: err.code ?? 'INTERNAL',
       message: err.message ?? 'An unexpected error occurred',
     },
   });

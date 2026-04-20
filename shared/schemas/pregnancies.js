@@ -27,7 +27,7 @@ export const deliverSchema = z.object({
   date_of_birth: dateStr.optional(),
   full_name: z.string().max(200).optional(),
   gender: z.enum(['M', 'F', 'O']).optional(),
-  relation_to_head: z.enum(['son', 'daughter', 'other']).default('son'),
+  relation_to_head: z.enum(['son', 'daughter', 'other']),
   birth_weight_kg: z.number().positive().optional(),
   delivery_type: z.enum(['normal', 'c-section', 'assisted']).optional(),
   complications: z.string().optional(),

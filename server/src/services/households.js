@@ -4,18 +4,35 @@ import { logAudit } from './audit.js';
 
 const COLS = 'id, malaria_number, address_line, village, district, state, pincode, status, migrated_at, notes, created_by, head_member_id, created_at, updated_at';
 
-export async function listHouseholds({ malaria_number, village, status, limit, offset }) {
-  let q = supabaseAdmin
+export async function listHouseholds({ malaria_number, village, status, q, limit, offset }) {
+  // fuzzy member-name search — delegates to rpc_search_households (uses pg_trgm)
+  if (q) {
+    const { data, error } = await supabaseAdmin.rpc('rpc_search_households', {
+      p_q:              q,
+      p_malaria_number: malaria_number ?? null,
+      p_village:        village        ?? null,
+      p_status:         status         ?? null,
+      p_limit:          limit,
+      p_offset:         offset,
+    });
+    if (error) throw new AppError('INTERNAL', error.message, 500);
+    const total = data.length > 0 ? Number(data[0].total_count) : 0;
+    const items = data.map(({ total_count, ...row }) => row);
+    return { items, total, limit, offset };
+  }
+
+  let query = supabaseAdmin
     .from('households')
     .select(COLS, { count: 'exact' })
     .order('created_at', { ascending: false });
 
-  if (malaria_number) q = q.ilike('malaria_number', `%${malaria_number}%`);
-  if (village) q = q.ilike('village', `%${village}%`);
-  if (status) q = q.eq('status', status);
+  if (malaria_number) query = query.ilike('malaria_number', `%${malaria_number}%`);
+  if (village)        query = query.ilike('village', `%${village}%`);
+  if (status)         query = query.eq('status', status);
 
-  const { data, count, error } = await q.range(offset, offset + limit - 1);
-  if (error) throw new AppError('DB_ERROR', error.message, 500);
+  // TODO: count: 'exact' becomes expensive past ~10k rows; switch to estimated count or cursor pagination if this table grows large
+  const { data, count, error } = await query.range(offset, offset + limit - 1);
+  if (error) throw new AppError('INTERNAL', error.message, 500);
   return { items: data, total: count, limit, offset };
 }
 
@@ -26,7 +43,7 @@ export async function getHousehold(id) {
     .eq('id', id)
     .single();
   if (error?.code === 'PGRST116') throw new AppError('NOT_FOUND', 'Household not found', 404);
-  if (error) throw new AppError('DB_ERROR', error.message, 500);
+  if (error) throw new AppError('INTERNAL', error.message, 500);
   return data;
 }
 
@@ -37,7 +54,7 @@ export async function createHousehold(payload, actorId) {
     .select(COLS)
     .single();
   if (error?.code === '23505') throw new AppError('CONFLICT', 'Malaria number already exists', 409);
-  if (error) throw new AppError('DB_ERROR', error.message, 500);
+  if (error) throw new AppError('INTERNAL', error.message, 500);
   await logAudit({ actorId, action: 'insert', tableName: 'households', recordId: data.id, newData: data });
   return data;
 }
@@ -50,7 +67,7 @@ export async function updateHousehold(id, payload, actorId) {
     .eq('id', id)
     .select(COLS)
     .single();
-  if (error) throw new AppError('DB_ERROR', error.message, 500);
+  if (error) throw new AppError('INTERNAL', error.message, 500);
   await logAudit({ actorId, action: 'update', tableName: 'households', recordId: id, oldData: existing, newData: data });
   return data;
 }

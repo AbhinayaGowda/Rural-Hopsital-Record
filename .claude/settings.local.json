@@ -2,10 +2,21 @@
   "permissions": {
     "allow": [
       "mcp__supabase__apply_migration",
-      "mcp__supabase__execute_sql"
+      "mcp__supabase__execute_sql",
+      "Bash(node scripts/smoke-test.js)",
+      "Bash(node scripts/seed-test-users.js)",
+      "Bash(npm run *)",
+      "Bash(node src/index.js)",
+      "Bash(curl -s http://localhost:4000/api/health)",
+      "Bash(curl -s http://localhost:5173)",
+      "Bash(curl -s http://localhost:5173/login)",
+      "Bash(node -e \"const p=require\\('./package.json'\\); console.log\\(JSON.stringify\\(p.scripts,null,2\\)\\)\")"
     ]
   },
   "enabledMcpjsonServers": [
     "supabase"
-  ]
+  ],
+  "enabledPlugins": {
+    "frontend-design@claude-plugins-official": true
+  }
 }

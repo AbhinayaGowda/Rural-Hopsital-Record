@@ -1,0 +1,25 @@
+body {
+  font-family: var(--font-sans);
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+h1, h2, h3, h4 {
+  line-height: 1.25;
+  margin: 0;
+}
+
+p { margin: 0; }
+
+button { cursor: pointer; }

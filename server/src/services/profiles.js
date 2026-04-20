@@ -11,7 +11,7 @@ export async function getProfile(id) {
     .eq('id', id)
     .single();
   if (error?.code === 'PGRST116') throw new AppError('NOT_FOUND', 'Profile not found', 404);
-  if (error) throw new AppError('DB_ERROR', error.message, 500);
+  if (error) throw new AppError('INTERNAL', error.message, 500);
   return data;
 }
 
@@ -23,7 +23,7 @@ export async function updateProfile(id, payload, actorId) {
     .eq('id', id)
     .select(COLS)
     .single();
-  if (error) throw new AppError('DB_ERROR', error.message, 500);
+  if (error) throw new AppError('INTERNAL', error.message, 500);
   await logAudit({ actorId, action: 'update', tableName: 'profiles', recordId: id, oldData: existing, newData: data });
   return data;
 }
@@ -34,6 +34,6 @@ export async function listProfiles({ limit, offset }) {
     .select(COLS, { count: 'exact' })
     .order('full_name', { ascending: true })
     .range(offset, offset + limit - 1);
-  if (error) throw new AppError('DB_ERROR', error.message, 500);
+  if (error) throw new AppError('INTERNAL', error.message, 500);
   return { items: data, total: count, limit, offset };
 }
