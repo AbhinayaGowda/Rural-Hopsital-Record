@@ -1,10 +1,16 @@
 import { supabaseAdmin } from '../lib/supabaseAdmin.js';
 import { AppError } from '../lib/AppError.js';
 import { logAudit } from './audit.js';
+import { applyLocationScope, isHouseholdObjectInScope } from '../middleware/scopeToUserLocations.js';
 
-const COLS = 'id, malaria_number, address_line, village, district, state, pincode, status, migrated_at, notes, created_by, head_member_id, created_at, updated_at';
+const COLS = 'id, malaria_number, address_line, village, district, state, pincode, status, migrated_at, notes, created_by, head_member_id, state_id, district_id, village_id, created_at, updated_at';
 
-export async function listHouseholds({ malaria_number, village, status, q, limit, offset }) {
+export async function listHouseholds({ malaria_number, village, status, q, limit, offset }, scope) {
+  // Non-admin with no assignments → return nothing immediately
+  if (scope && !scope.isAdmin && scope.districtIds.length === 0 && scope.villageIds.length === 0) {
+    return { items: [], total: 0, limit, offset };
+  }
+
   // fuzzy member-name search — delegates to rpc_search_households (uses pg_trgm)
   if (q) {
     const { data, error } = await supabaseAdmin.rpc('rpc_search_households', {
@@ -14,6 +20,8 @@ export async function listHouseholds({ malaria_number, village, status, q, limit
       p_status:         status         ?? null,
       p_limit:          limit,
       p_offset:         offset,
+      p_district_ids:   scope && !scope.isAdmin ? scope.districtIds : null,
+      p_village_ids:    scope && !scope.isAdmin ? scope.villageIds  : null,
     });
     if (error) throw new AppError('INTERNAL', error.message, 500);
     const total = data.length > 0 ? Number(data[0].total_count) : 0;
@@ -30,10 +38,19 @@ export async function listHouseholds({ malaria_number, village, status, q, limit
   if (village)        query = query.ilike('village', `%${village}%`);
   if (status)         query = query.eq('status', status);
 
+  if (scope) query = applyLocationScope(query, scope);
+
   // TODO: count: 'exact' becomes expensive past ~10k rows; switch to estimated count or cursor pagination if this table grows large
   const { data, count, error } = await query.range(offset, offset + limit - 1);
   if (error) throw new AppError('INTERNAL', error.message, 500);
   return { items: data, total: count, limit, offset };
+}
+
+export function assertHouseholdInScope(household, scope) {
+  if (!scope) return;
+  if (!isHouseholdObjectInScope(household, scope)) {
+    throw new AppError('FORBIDDEN', 'This household is outside your assigned area', 403);
+  }
 }
 
 export async function getHousehold(id) {

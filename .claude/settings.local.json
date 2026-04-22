@@ -10,7 +10,21 @@
       "Bash(curl -s http://localhost:4000/api/health)",
       "Bash(curl -s http://localhost:5173)",
       "Bash(curl -s http://localhost:5173/login)",
-      "Bash(node -e \"const p=require\\('./package.json'\\); console.log\\(JSON.stringify\\(p.scripts,null,2\\)\\)\")"
+      "Bash(node -e \"const p=require\\('./package.json'\\); console.log\\(JSON.stringify\\(p.scripts,null,2\\)\\)\")",
+      "mcp__supabase__list_migrations",
+      "Bash(node scripts/seed-india-locations.js)",
+      "Bash(node scripts/seed-medical-conditions.js)",
+      "Bash(node -e ' *)",
+      "Bash(kill %1)",
+      "Bash(netstat -ano)",
+      "Bash(findstr :4000)",
+      "Bash(taskkill /PID 11004 /F)",
+      "Bash(cmd *)",
+      "PowerShell(Stop-Process *)",
+      "Bash(node --input-type=module)",
+      "Bash(npx --yes acorn --ecma2020 --module src/features/referrals/ReferralList.jsx)",
+      "Bash(npx acorn *)",
+      "Bash(xargs grep *)"
     ]
   },
   "enabledMcpjsonServers": [

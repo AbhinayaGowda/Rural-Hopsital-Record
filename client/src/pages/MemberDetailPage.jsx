@@ -16,11 +16,13 @@ import DiseaseHistoryForm from '../features/diseaseHistory/DiseaseHistoryForm.js
 import PregnancyList from '../features/pregnancies/PregnancyList.jsx';
 import PregnancyForm from '../features/pregnancies/PregnancyForm.jsx';
 import VaccinationList from '../features/vaccinations/VaccinationList.jsx';
+import ReferralList from '../features/referrals/ReferralList.jsx';
+import ReferralForm from '../features/referrals/ReferralForm.jsx';
 import { fmtGender, fmtStatus, statusColor } from '../utils/format.js';
 import { fmtDate, calcAge } from '../utils/date.js';
 import styles from './member-detail.module.css';
 
-const TABS = ['Info', 'Visits', 'Disease History', 'Pregnancies', 'Vaccinations'];
+const ALL_TABS = ['Info', 'Visits', 'Disease History', 'Pregnancies', 'Vaccinations', 'Referrals'];
 
 export default function MemberDetailPage() {
   const { id } = useParams();
@@ -32,6 +34,7 @@ export default function MemberDetailPage() {
   const [showVisitForm, setShowVisitForm] = useState(false);
   const [showDiseaseForm, setShowDiseaseForm] = useState(false);
   const [showPregnancyForm, setShowPregnancyForm] = useState(false);
+  const [showReferralForm, setShowReferralForm] = useState(false);
 
   const { data: member, isLoading } = useQuery({
     queryKey: ['member', id],
@@ -75,16 +78,28 @@ export default function MemberDetailPage() {
               {member.aadhaar && <span>Aadhaar: ••••{member.aadhaar.slice(-4)}</span>}
               <span className={styles.relation}>{member.relation_to_head}</span>
             </div>
+            {member.health_id && (
+              <div className={styles.healthId}>
+                <span className={styles.healthIdLabel}>Health ID</span>
+                <span className={styles.healthIdValue}>{member.health_id}</span>
+              </div>
+            )}
           </div>
-          {isGroundStaff && (
-            <Button variant="secondary" size="sm" onClick={() => setShowEdit(true)}>Edit</Button>
-          )}
+          <div className={styles.cardActions}>
+            <Button variant="ghost" size="sm" onClick={() => window.print()}>🖨 Health Card</Button>
+            {isGroundStaff && (
+              <Button variant="secondary" size="sm" onClick={() => setShowEdit(true)}>Edit</Button>
+            )}
+          </div>
         </div>
       </div>
 
       {/* Tabs */}
       <div className={styles.tabs}>
-        {TABS.filter(t => t !== 'Pregnancies' || isFemale).map((t) => (
+        {ALL_TABS
+          .filter(t => t !== 'Pregnancies' || isFemale)
+          .filter(t => t !== 'Referrals' || isDoctor)
+          .map((t) => (
           <button
             key={t}
             className={[styles.tab, tab === t ? styles.tabActive : ''].join(' ')}
@@ -98,6 +113,7 @@ export default function MemberDetailPage() {
       <div className={styles.tabBody}>
         {tab === 'Info' && (
           <div className={styles.infoGrid}>
+            {member.health_id && <InfoRow label="Health ID" value={member.health_id} mono />}
             <InfoRow label="Relation to head" value={member.relation_to_head} />
             <InfoRow label="Gender" value={fmtGender(member.gender)} />
             <InfoRow label="Date of birth" value={fmtDate(member.date_of_birth)} />
@@ -144,6 +160,15 @@ export default function MemberDetailPage() {
         {tab === 'Vaccinations' && (
           <VaccinationList memberId={id} />
         )}
+
+        {tab === 'Referrals' && isDoctor && (
+          <>
+            <div className={styles.tabAction}>
+              <Button size="sm" onClick={() => setShowReferralForm(true)}>+ New Referral</Button>
+            </div>
+            <ReferralList memberId={id} />
+          </>
+        )}
       </div>
 
       {/* Modals */}
@@ -180,15 +205,23 @@ export default function MemberDetailPage() {
           onCancel={() => setShowPregnancyForm(false)}
         />
       </Modal>
+
+      <Modal open={showReferralForm} onClose={() => setShowReferralForm(false)} title="New Referral">
+        <ReferralForm
+          memberId={id}
+          onSuccess={() => setShowReferralForm(false)}
+          onCancel={() => setShowReferralForm(false)}
+        />
+      </Modal>
     </div>
   );
 }
 
-function InfoRow({ label, value }) {
+function InfoRow({ label, value, mono }) {
   return (
     <div className={styles.infoRow}>
       <span className={styles.infoLabel}>{label}</span>
-      <span className={styles.infoValue}>{value || '—'}</span>
+      <span className={[styles.infoValue, mono ? styles.mono : ''].join(' ')}>{value || '—'}</span>
     </div>
   );
 }

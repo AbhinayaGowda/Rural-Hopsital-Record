@@ -8,11 +8,27 @@ import Select from '../../components/Select.jsx';
 import Button from '../../components/Button.jsx';
 import styles from '../form.module.css';
 
+const KNOWN_COMPLICATIONS = [
+  'Gestational diabetes', 'Pre-eclampsia', 'Anaemia', 'Placenta previa',
+  'Preterm labour', 'Multiple gestation', 'Oligohydramnios', 'Polyhydramnios',
+];
+
 export default function PregnancyForm({ memberId, onSuccess, onCancel }) {
   const { session } = useAuth();
   const qc = useQueryClient();
-  const [f, setF] = useState({ lmp_date: '', expected_due_date: '', risk_level: 'low', status: 'active', notes: '' });
+  const [f, setF] = useState({
+    lmp_date: '', expected_due_date: '', risk_level: 'low', status: 'active',
+    notes: '', complications: [],
+  });
   const set = (k) => (e) => setF((p) => ({ ...p, [k]: e.target.value }));
+
+  const toggleComplication = (c) =>
+    setF((p) => ({
+      ...p,
+      complications: p.complications.includes(c)
+        ? p.complications.filter((x) => x !== c)
+        : [...p.complications, c],
+    }));
 
   const mutation = useMutation({
     mutationFn: (data) => pregnanciesApi.create(memberId, data),
@@ -21,7 +37,7 @@ export default function PregnancyForm({ memberId, onSuccess, onCancel }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const payload = { risk_level: f.risk_level, status: f.status };
+    const payload = { risk_level: f.risk_level, status: f.status, complications: f.complications };
     if (f.lmp_date)           payload.lmp_date           = f.lmp_date;
     if (f.expected_due_date)  payload.expected_due_date  = f.expected_due_date;
     if (f.notes)              payload.notes              = f.notes;
@@ -46,6 +62,21 @@ export default function PregnancyForm({ memberId, onSuccess, onCancel }) {
           <option value="miscarried">Miscarried</option>
           <option value="terminated">Terminated</option>
         </Select>
+      </div>
+      <div className={styles.field}>
+        <label className={styles.label}>Complications</label>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 4 }}>
+          {KNOWN_COMPLICATIONS.map((c) => (
+            <label key={c} style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 13, cursor: 'pointer' }}>
+              <input
+                type="checkbox"
+                checked={f.complications.includes(c)}
+                onChange={() => toggleComplication(c)}
+              />
+              {c}
+            </label>
+          ))}
+        </div>
       </div>
       <div className={styles.field}>
         <label className={styles.label}>Notes</label>

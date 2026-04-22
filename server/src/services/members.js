@@ -2,7 +2,7 @@ import { supabaseAdmin } from '../lib/supabaseAdmin.js';
 import { AppError } from '../lib/AppError.js';
 import { logAudit } from './audit.js';
 
-const COLS = 'id, household_id, full_name, gender, date_of_birth, aadhaar, relation_to_head, is_head, contact_number, status, deceased_date, migrated_date, created_by, created_at, updated_at';
+const COLS = 'id, household_id, full_name, gender, date_of_birth, aadhaar, relation_to_head, is_head, contact_number, status, deceased_date, migrated_date, health_id, created_by, created_at, updated_at';
 
 export async function listMembers(householdId, { limit, offset }) {
   const { data, count, error } = await supabaseAdmin

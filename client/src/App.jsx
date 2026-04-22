@@ -10,6 +10,9 @@ import HouseholdDetailPage from './pages/HouseholdDetailPage.jsx';
 import MemberDetailPage from './pages/MemberDetailPage.jsx';
 import NotificationsPage from './pages/NotificationsPage.jsx';
 import AuditLogsPage from './pages/AuditLogsPage.jsx';
+import SearchPage from './pages/SearchPage.jsx';
+import AdminUsersPage from './pages/AdminUsersPage.jsx';
+import ReportsPage from './pages/ReportsPage.jsx';
 
 function ProtectedRoute({ children }) {
   const { session, loading } = useAuth();
@@ -44,8 +47,11 @@ export default function App() {
           <Route path="/households" element={<ProtectedRoute><HouseholdsPage /></ProtectedRoute>} />
           <Route path="/households/:id" element={<ProtectedRoute><HouseholdDetailPage /></ProtectedRoute>} />
           <Route path="/members/:id" element={<ProtectedRoute><MemberDetailPage /></ProtectedRoute>} />
+          <Route path="/search" element={<ProtectedRoute><SearchPage /></ProtectedRoute>} />
           <Route path="/notifications" element={<ProtectedRoute><NotificationsPage /></ProtectedRoute>} />
-          <Route path="/audit-logs" element={<AdminRoute><AuditLogsPage /></AdminRoute>} />
+          <Route path="/audit-logs"   element={<AdminRoute><AuditLogsPage /></AdminRoute>} />
+          <Route path="/admin/users"   element={<AdminRoute><AdminUsersPage /></AdminRoute>} />
+          <Route path="/admin/reports" element={<AdminRoute><ReportsPage /></AdminRoute>} />
           <Route path="*" element={<Navigate to="/households" replace />} />
         </Routes>
       </AuthProvider>

@@ -3,14 +3,21 @@ import { z } from 'zod';
 const dateStr = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Must be YYYY-MM-DD');
 
 export const createPregnancySchema = z.object({
-  lmp_date: dateStr.optional(),
-  expected_due_date: dateStr.optional(),
-  risk_level: z.enum(['low', 'medium', 'high']).default('low'),
-  status: z.enum(['active', 'delivered', 'miscarried', 'terminated']).default('active'),
-  notes: z.string().optional(),
+  lmp_date:            dateStr.optional(),
+  expected_due_date:   dateStr.optional(),
+  risk_level:          z.enum(['low', 'medium', 'high']).default('low'),
+  status:              z.enum(['active', 'delivered', 'miscarried', 'terminated']).default('active'),
+  notes:               z.string().optional(),
+  assigned_doctor_id:  z.string().uuid().optional(),
+  assigned_staff_id:   z.string().uuid().optional(),
+  complications:       z.array(z.string()).default([]),
+  risk_factors:        z.array(z.string()).default([]),
 });
 
-export const updatePregnancySchema = createPregnancySchema.partial();
+export const updatePregnancySchema = createPregnancySchema.partial().extend({
+  missed_checkup_count: z.number().int().min(0).optional(),
+  actual_delivery_date: dateStr.nullable().optional(),
+});
 
 export const createCheckupSchema = z.object({
   checkup_date: dateStr,

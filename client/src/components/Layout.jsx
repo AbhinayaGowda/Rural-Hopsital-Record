@@ -27,13 +27,24 @@ export default function Layout({ children }) {
           <NavLink to="/households" className={({ isActive }) => [styles.link, isActive ? styles.active : ''].join(' ')}>
             <span className={styles.icon}>🏠</span> Households
           </NavLink>
+          <NavLink to="/search" className={({ isActive }) => [styles.link, isActive ? styles.active : ''].join(' ')}>
+            <span className={styles.icon}>🔍</span> Person Search
+          </NavLink>
           <NavLink to="/notifications" className={({ isActive }) => [styles.link, isActive ? styles.active : ''].join(' ')}>
             <span className={styles.icon}>🔔</span> Notifications
           </NavLink>
           {isAdmin && (
-            <NavLink to="/audit-logs" className={({ isActive }) => [styles.link, isActive ? styles.active : ''].join(' ')}>
-              <span className={styles.icon}>📋</span> Audit Logs
-            </NavLink>
+            <>
+              <NavLink to="/admin/users" className={({ isActive }) => [styles.link, isActive ? styles.active : ''].join(' ')}>
+                <span className={styles.icon}>👥</span> Users
+              </NavLink>
+              <NavLink to="/admin/reports" className={({ isActive }) => [styles.link, isActive ? styles.active : ''].join(' ')}>
+                <span className={styles.icon}>📊</span> Reports
+              </NavLink>
+              <NavLink to="/audit-logs" className={({ isActive }) => [styles.link, isActive ? styles.active : ''].join(' ')}>
+                <span className={styles.icon}>📋</span> Audit Logs
+              </NavLink>
+            </>
           )}
         </nav>
 
