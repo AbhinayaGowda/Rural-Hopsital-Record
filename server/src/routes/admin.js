@@ -1,7 +1,11 @@
 import { Router } from 'express';
 import { authenticate } from '../middleware/authenticate.js';
 import { requireRole } from '../middleware/requireRole.js';
+import multer from 'multer';
 import * as ctrl from '../controllers/admin.js';
+import { importHouseholds } from '../controllers/csvImport.js';
+
+const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 5 * 1024 * 1024 } });
 
 const router = Router();
 router.use(authenticate);
@@ -20,5 +24,11 @@ router.post('/users/:id/assignments/districts',                    ctrl.addDistr
 router.delete('/users/:id/assignments/districts/:districtId',      ctrl.removeDistrictAssignment);
 router.post('/users/:id/assignments/villages',                     ctrl.addVillageAssignment);
 router.delete('/users/:id/assignments/villages/:villageId',        ctrl.removeVillageAssignment);
+
+// Outbreak detection
+router.get('/outbreaks', ctrl.detectOutbreaks);
+
+// CSV import
+router.post('/import/households', upload.single('file'), importHouseholds);
 
 export default router;

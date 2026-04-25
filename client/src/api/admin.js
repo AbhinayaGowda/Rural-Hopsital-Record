@@ -37,4 +37,11 @@ export const adminApi = {
 
   removeVillage: (id, villageId) =>
     apiFetch(`/admin/users/${id}/assignments/villages/${villageId}`, { method: 'DELETE' }),
+
+  // Outbreak detection
+  detectOutbreaks: (days = 7) => apiFetch(`/admin/outbreaks?days=${days}`),
+
+  // CSV import
+  importHouseholds: (formData) =>
+    apiFetch('/admin/import/households', { method: 'POST', rawBody: formData }),
 };

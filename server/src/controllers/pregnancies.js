@@ -9,6 +9,19 @@ export async function listPregnancies(req, res) {
   res.json({ data: result, error: null });
 }
 
+// Top-level list for doctor dashboard — filters by assigned_doctor_id, status, risk_level
+export async function listAll(req, res) {
+  const { assigned_doctor_id, status, risk_level, limit, offset } = req.query;
+  const result = await svc.listAllPregnancies({
+    assignedDoctorId: assigned_doctor_id,
+    status,
+    riskLevel: risk_level,
+    limit:  limit  ? parseInt(limit,  10) : 50,
+    offset: offset ? parseInt(offset, 10) : 0,
+  });
+  res.json({ data: result, error: null });
+}
+
 export async function getOne(req, res) {
   const pregnancy = await svc.getPregnancy(req.params.id);
   res.json({ data: pregnancy, error: null });

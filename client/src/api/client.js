@@ -11,19 +11,25 @@ const BASE_URL = import.meta.env.VITE_API_BASE_URL;
  * - All API modules should call this instead of raw fetch().
  */
 export async function apiFetch(path, options = {}) {
-  const { headers: customHeaders, ...fetchOptions } = options;
+  const { headers: customHeaders, rawBody, ...fetchOptions } = options;
 
   // Always grab the freshest token from Supabase at call-time
   const { data: { session } } = await supabase.auth.getSession();
   const token = session?.access_token;
 
+  // Don't set Content-Type for FormData — browser sets it with boundary
+  const isFormData = rawBody instanceof FormData;
   const headers = {
-    'Content-Type': 'application/json',
+    ...(isFormData ? {} : { 'Content-Type': 'application/json' }),
     ...(token ? { Authorization: `Bearer ${token}` } : {}),
     ...customHeaders,
   };
 
-  const res = await fetch(`${BASE_URL}${path}`, { ...fetchOptions, headers });
+  const res = await fetch(`${BASE_URL}${path}`, {
+    ...fetchOptions,
+    body: rawBody ?? fetchOptions.body,
+    headers,
+  });
   const body = await res.json();
 
   if (!res.ok) {

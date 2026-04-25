@@ -2,6 +2,7 @@ import { useState } from 'react';
 import PropTypes from 'prop-types';
 import Input from '../../components/Input.jsx';
 import Button from '../../components/Button.jsx';
+import LocationPicker from '../../components/LocationPicker.jsx';
 import styles from '../form.module.css';
 
 export default function HouseholdForm({ initial, onSubmit, loading, error, onCancel }) {
@@ -15,11 +16,23 @@ export default function HouseholdForm({ initial, onSubmit, loading, error, onCan
     notes:          initial?.notes         ?? '',
   });
 
+  const [location, setLocation] = useState(
+    initial?.latitude ? { lat: initial.latitude, lng: initial.longitude, source: initial.location_source } : null,
+  );
+
   const set = (k) => (e) => setF((p) => ({ ...p, [k]: e.target.value }));
 
   const handleSubmit = (e) => {
     e.preventDefault();
     const payload = Object.fromEntries(Object.entries(f).filter(([, v]) => v !== ''));
+    if (location?.lat) {
+      payload.latitude             = location.lat;
+      payload.longitude            = location.lng;
+      payload.location_accuracy_m  = location.accuracy ?? null;
+      payload.location_source      = location.source   ?? 'pin_placed';
+    } else if (location?.source === 'skipped') {
+      payload.location_source = 'skipped';
+    }
     onSubmit(payload);
   };
 
@@ -40,6 +53,10 @@ export default function HouseholdForm({ initial, onSubmit, loading, error, onCan
       <div className={styles.field}>
         <label className={styles.label}>Notes</label>
         <textarea className={styles.textarea} value={f.notes} onChange={set('notes')} rows={2} />
+      </div>
+      <div className={styles.field}>
+        <label className={styles.label}>Location (optional)</label>
+        <LocationPicker value={location} onChange={setLocation} />
       </div>
       {error && <p className={styles.error}>{error}</p>}
       <div className={styles.actions}>

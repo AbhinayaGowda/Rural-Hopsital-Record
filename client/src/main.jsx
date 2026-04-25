@@ -6,6 +6,7 @@ import App from './App.jsx';
 import './styles/reset.css';
 import './styles/tokens.css';
 import './styles/global.css';
+import './i18n/index.js';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>

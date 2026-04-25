@@ -1,0 +1,92 @@
+{
+  "nav": {
+    "households": "परिवार",
+    "search": "व्यक्ति खोज",
+    "notifications": "सूचनाएं",
+    "users": "उपयोगकर्ता",
+    "reports": "रिपोर्ट",
+    "auditLogs": "ऑडिट लॉग",
+    "householdMap": "परिवार मानचित्र",
+    "fieldVisits": "क्षेत्र दौरे",
+    "outbreaks": "प्रकोप"
+  },
+  "common": {
+    "save": "परिवर्तन सहेजें",
+    "cancel": "रद्द करें",
+    "loading": "लोड हो रहा है…",
+    "noData": "कोई रिकॉर्ड नहीं मिला।",
+    "required": "आवश्यक",
+    "optional": "वैकल्पिक",
+    "submit": "जमा करें",
+    "create": "बनाएं",
+    "edit": "संपादित करें",
+    "delete": "हटाएं",
+    "download": "डाउनलोड",
+    "upload": "अपलोड",
+    "search": "खोजें",
+    "filter": "फ़िल्टर",
+    "reset": "रीसेट"
+  },
+  "household": {
+    "title": "परिवार",
+    "malariaNumber": "मलेरिया नंबर",
+    "village": "गांव",
+    "district": "जिला",
+    "state": "राज्य",
+    "pincode": "पिनकोड",
+    "address": "पता",
+    "notes": "टिप्पणियां",
+    "status": "स्थिति",
+    "head": "परिवार का मुखिया",
+    "members": "सदस्य",
+    "location": "स्थान",
+    "healthCard": "स्वास्थ्य कार्ड डाउनलोड करें"
+  },
+  "member": {
+    "title": "सदस्य",
+    "fullName": "पूरा नाम",
+    "dob": "जन्म तिथि",
+    "gender": "लिंग",
+    "phone": "फोन",
+    "aadhaar": "आधार",
+    "abhaId": "ABHA ID",
+    "healthId": "स्वास्थ्य ID",
+    "status": "स्थिति",
+    "relation": "मुखिया से संबंध",
+    "healthCard": "स्वास्थ्य कार्ड डाउनलोड करें"
+  },
+  "pregnancy": {
+    "title": "गर्भावस्था",
+    "lmpDate": "अंतिम मासिक धर्म",
+    "edd": "अनुमानित प्रसव तिथि (संदर्भ)",
+    "riskLevel": "जोखिम स्तर",
+    "trimester": "तिमाही",
+    "status": "स्थिति",
+    "complications": "जटिलताएं",
+    "markDelivered": "प्रसव दर्ज करें",
+    "markTerminated": "समाप्त करें"
+  },
+  "visit": {
+    "title": "डॉक्टर विज़िट",
+    "date": "विज़िट तिथि",
+    "symptoms": "लक्षण",
+    "diagnosis": "निदान",
+    "prescription": "नुस्खा",
+    "followUp": "अनुवर्ती तिथि",
+    "notes": "टिप्पणियां"
+  },
+  "notification": {
+    "title": "सूचनाएं",
+    "markRead": "पढ़ा हुआ चिह्नित करें",
+    "noNew": "कोई नई सूचना नहीं"
+  },
+  "fieldVisit": {
+    "title": "क्षेत्र दौरा",
+    "logVisit": "दौरा दर्ज करें",
+    "village": "दौरा किया गांव",
+    "householdsUpdated": "परिवार अपडेट किए",
+    "membersAdded": "सदस्य जोड़े",
+    "visitedAt": "दौरे का समय",
+    "notes": "टिप्पणियां"
+  }
+}

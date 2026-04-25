@@ -1,0 +1,92 @@
+{
+  "nav": {
+    "households": "कुटुंब",
+    "search": "व्यक्ती शोध",
+    "notifications": "सूचना",
+    "users": "वापरकर्ते",
+    "reports": "अहवाल",
+    "auditLogs": "ऑडिट नोंदी",
+    "householdMap": "कुटुंब नकाशा",
+    "fieldVisits": "क्षेत्र भेटी",
+    "outbreaks": "साथीचे रोग"
+  },
+  "common": {
+    "save": "बदल जतन करा",
+    "cancel": "रद्द करा",
+    "loading": "लोड होत आहे…",
+    "noData": "कोणत्याही नोंदी आढळल्या नाहीत.",
+    "required": "आवश्यक",
+    "optional": "पर्यायी",
+    "submit": "सबमिट करा",
+    "create": "तयार करा",
+    "edit": "संपादित करा",
+    "delete": "हटवा",
+    "download": "डाउनलोड",
+    "upload": "अपलोड",
+    "search": "शोधा",
+    "filter": "फिल्टर",
+    "reset": "रीसेट"
+  },
+  "household": {
+    "title": "कुटुंब",
+    "malariaNumber": "मलेरिया क्रमांक",
+    "village": "गाव",
+    "district": "जिल्हा",
+    "state": "राज्य",
+    "pincode": "पिनकोड",
+    "address": "पत्ता",
+    "notes": "नोंदी",
+    "status": "स्थिती",
+    "head": "कुटुंब प्रमुख",
+    "members": "सदस्य",
+    "location": "स्थान",
+    "healthCard": "आरोग्य कार्ड डाउनलोड करा"
+  },
+  "member": {
+    "title": "सदस्य",
+    "fullName": "पूर्ण नाव",
+    "dob": "जन्म तारीख",
+    "gender": "लिंग",
+    "phone": "फोन",
+    "aadhaar": "आधार",
+    "abhaId": "ABHA ID",
+    "healthId": "आरोग्य ID",
+    "status": "स्थिती",
+    "relation": "प्रमुखाशी संबंध",
+    "healthCard": "आरोग्य कार्ड डाउनलोड करा"
+  },
+  "pregnancy": {
+    "title": "गर्भधारणा",
+    "lmpDate": "शेवटची मासिक पाळी",
+    "edd": "अपेक्षित प्रसूती तारीख (संदर्भ)",
+    "riskLevel": "जोखीम पातळी",
+    "trimester": "तिमाही",
+    "status": "स्थिती",
+    "complications": "गुंतागुंत",
+    "markDelivered": "प्रसूती नोंदवा",
+    "markTerminated": "समाप्त करा"
+  },
+  "visit": {
+    "title": "डॉक्टर भेट",
+    "date": "भेटीची तारीख",
+    "symptoms": "लक्षणे",
+    "diagnosis": "निदान",
+    "prescription": "औषधोपचार",
+    "followUp": "पुनर्भेट तारीख",
+    "notes": "नोंदी"
+  },
+  "notification": {
+    "title": "सूचना",
+    "markRead": "वाचले म्हणून चिन्हांकित करा",
+    "noNew": "कोणत्याही नवीन सूचना नाहीत"
+  },
+  "fieldVisit": {
+    "title": "क्षेत्र भेट",
+    "logVisit": "भेट नोंदवा",
+    "village": "भेट दिलेले गाव",
+    "householdsUpdated": "अद्यतनित कुटुंबे",
+    "membersAdded": "जोडलेले सदस्य",
+    "visitedAt": "भेटीची वेळ",
+    "notes": "नोंदी"
+  }
+}

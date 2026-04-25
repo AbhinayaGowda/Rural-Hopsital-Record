@@ -135,3 +135,11 @@ export async function removeVillageAssignment(profileId, villageId) {
     .eq('village_id', villageId);
   if (error) throw new AppError('INTERNAL', error.message, 500);
 }
+
+// ── Outbreak Detection ───────────────────────────────────────
+
+export async function detectOutbreaks(days = 7) {
+  const { data, error } = await supabaseAdmin.rpc('rpc_detect_outbreaks', { p_days: days });
+  if (error) throw new AppError('INTERNAL', error.message, 500);
+  return data;
+}

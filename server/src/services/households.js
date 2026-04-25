@@ -3,7 +3,7 @@ import { AppError } from '../lib/AppError.js';
 import { logAudit } from './audit.js';
 import { applyLocationScope, isHouseholdObjectInScope } from '../middleware/scopeToUserLocations.js';
 
-const COLS = 'id, malaria_number, address_line, village, district, state, pincode, status, migrated_at, notes, created_by, head_member_id, state_id, district_id, village_id, created_at, updated_at';
+const COLS = 'id, malaria_number, address_line, village, district, state, pincode, status, migrated_at, notes, created_by, head_member_id, state_id, district_id, village_id, latitude, longitude, location_accuracy_m, location_source, created_at, updated_at';
 
 export async function listHouseholds({ malaria_number, village, status, q, limit, offset }, scope) {
   // Non-admin with no assignments → return nothing immediately

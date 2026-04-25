@@ -1,6 +1,7 @@
 import { supabaseAdmin } from '../lib/supabaseAdmin.js';
 import { AppError } from '../lib/AppError.js';
 import { logAudit } from './audit.js';
+import { scheduleNotification } from './notifications.js';
 
 const COLS = 'id, member_id, doctor_id, visit_date, symptoms, diagnosis, prescription, notes, follow_up_date, created_at, updated_at';
 
@@ -34,6 +35,23 @@ export async function createVisit(memberId, payload, actorId) {
     .single();
   if (error) throw new AppError('INTERNAL', error.message, 500);
   await logAudit({ actorId, action: 'insert', tableName: 'doctor_visits', recordId: data.id, newData: data });
+
+  // Schedule follow-up reminder 1 day before follow_up_date
+  if (data.follow_up_date) {
+    const reminderDate = new Date(data.follow_up_date);
+    reminderDate.setDate(reminderDate.getDate() - 1);
+    if (reminderDate > new Date()) {
+      await scheduleNotification({
+        recipientUserId:   actorId,
+        type:              'follow_up',
+        message:           `Follow-up visit due tomorrow (${data.follow_up_date}).`,
+        scheduledFor:      reminderDate.toISOString(),
+        relatedEntityType: 'doctor_visit',
+        relatedEntityId:   data.id,
+      }).catch(() => {});
+    }
+  }
+
   return data;
 }
 

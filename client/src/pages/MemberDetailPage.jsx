@@ -75,7 +75,8 @@ export default function MemberDetailPage() {
               <span>{fmtGender(member.gender)}{age !== null ? `, ${age} yrs` : ''}</span>
               {member.date_of_birth && <span>DOB: {fmtDate(member.date_of_birth)}</span>}
               {member.contact_number && <span>📞 {member.contact_number}</span>}
-              {member.aadhaar && <span>Aadhaar: ••••{member.aadhaar.slice(-4)}</span>}
+              {member.aadhaar  && <span>Aadhaar: ••••{member.aadhaar.slice(-4)}</span>}
+              {member.abha_id && <span>ABHA: {member.abha_id}</span>}
               <span className={styles.relation}>{member.relation_to_head}</span>
             </div>
             {member.health_id && (
@@ -86,7 +87,14 @@ export default function MemberDetailPage() {
             )}
           </div>
           <div className={styles.cardActions}>
-            <Button variant="ghost" size="sm" onClick={() => window.print()}>🖨 Health Card</Button>
+            <a
+              href={membersApi.healthCard(id)}
+              target="_blank"
+              rel="noreferrer"
+              style={{ fontSize: 13, color: 'var(--color-primary)', textDecoration: 'none', whiteSpace: 'nowrap' }}
+            >
+              ↓ Health Card
+            </a>
             {isGroundStaff && (
               <Button variant="secondary" size="sm" onClick={() => setShowEdit(true)}>Edit</Button>
             )}

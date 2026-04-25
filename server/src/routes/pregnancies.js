@@ -7,6 +7,9 @@ const router = Router();
 const staff = requireRole('doctor', 'ground_staff', 'admin');
 const doctors = requireRole('doctor', 'admin');
 
+// Top-level list (doctor dashboard, admin overview)
+router.get('/', authenticate, staff, ctrl.listAll);
+
 router.get('/:id', authenticate, staff, ctrl.getOne);
 router.patch('/:id', authenticate, doctors, ctrl.update);
 router.get('/:id/checkups', authenticate, staff, ctrl.listCheckups);

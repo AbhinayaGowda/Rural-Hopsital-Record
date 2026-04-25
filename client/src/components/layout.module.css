@@ -30,6 +30,7 @@
 .brandText { font-size: 15px; font-weight: 700; color: #f1f5f9; }
 
 .nav { display: flex; flex-direction: column; gap: 2px; padding: 0 var(--space-2); flex: 1; }
+.navDivider { height: 1px; background: rgba(255,255,255,0.08); margin: var(--space-2) var(--space-3); }
 
 .link {
   display: flex;

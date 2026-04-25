@@ -3,17 +3,20 @@ import PropTypes from 'prop-types';
 import { useAuth } from '../hooks/useAuth.js';
 import { useRole } from '../hooks/useRole.js';
 import { fmtRole } from '../utils/format.js';
+import LanguageSwitcher from './LanguageSwitcher.jsx';
 import styles from './layout.module.css';
 
 export default function Layout({ children }) {
   const { profile, signOut } = useAuth();
-  const { isAdmin } = useRole();
+  const { isAdmin, isDoctor } = useRole();
   const navigate = useNavigate();
 
   const handleSignOut = async () => {
     await signOut();
     navigate('/login');
   };
+
+  const link = (to) => ({ isActive }) => [styles.link, isActive ? styles.active : ''].join(' ');
 
   return (
     <div className={styles.shell}>
@@ -24,29 +27,51 @@ export default function Layout({ children }) {
         </div>
 
         <nav className={styles.nav}>
-          <NavLink to="/households" className={({ isActive }) => [styles.link, isActive ? styles.active : ''].join(' ')}>
+          <NavLink to="/households"     className={link('/households')}>
             <span className={styles.icon}>🏠</span> Households
           </NavLink>
-          <NavLink to="/search" className={({ isActive }) => [styles.link, isActive ? styles.active : ''].join(' ')}>
+          <NavLink to="/search"         className={link('/search')}>
             <span className={styles.icon}>🔍</span> Person Search
           </NavLink>
-          <NavLink to="/notifications" className={({ isActive }) => [styles.link, isActive ? styles.active : ''].join(' ')}>
+          <NavLink to="/notifications"  className={link('/notifications')}>
             <span className={styles.icon}>🔔</span> Notifications
           </NavLink>
+          <NavLink to="/field-visits"   className={link('/field-visits')}>
+            <span className={styles.icon}>📍</span> Field Visits
+          </NavLink>
+
+          {(isDoctor || isAdmin) && (
+            <NavLink to="/my-pregnancies" className={link('/my-pregnancies')}>
+              <span className={styles.icon}>🤰</span> My Pregnancies
+            </NavLink>
+          )}
+
           {isAdmin && (
             <>
-              <NavLink to="/admin/users" className={({ isActive }) => [styles.link, isActive ? styles.active : ''].join(' ')}>
+              <div className={styles.navDivider} />
+              <NavLink to="/admin/users"          className={link('/admin/users')}>
                 <span className={styles.icon}>👥</span> Users
               </NavLink>
-              <NavLink to="/admin/reports" className={({ isActive }) => [styles.link, isActive ? styles.active : ''].join(' ')}>
+              <NavLink to="/admin/reports"        className={link('/admin/reports')}>
                 <span className={styles.icon}>📊</span> Reports
               </NavLink>
-              <NavLink to="/audit-logs" className={({ isActive }) => [styles.link, isActive ? styles.active : ''].join(' ')}>
+              <NavLink to="/admin/outbreaks"      className={link('/admin/outbreaks')}>
+                <span className={styles.icon}>⚠️</span> Outbreaks
+              </NavLink>
+              <NavLink to="/admin/households/map" className={link('/admin/households/map')}>
+                <span className={styles.icon}>🗺️</span> Household Map
+              </NavLink>
+              <NavLink to="/admin/import"         className={link('/admin/import')}>
+                <span className={styles.icon}>📥</span> CSV Import
+              </NavLink>
+              <NavLink to="/audit-logs"           className={link('/audit-logs')}>
                 <span className={styles.icon}>📋</span> Audit Logs
               </NavLink>
             </>
           )}
         </nav>
+
+        <LanguageSwitcher />
 
         <div className={styles.userCard}>
           <div className={styles.userName}>{profile?.full_name ?? '…'}</div>

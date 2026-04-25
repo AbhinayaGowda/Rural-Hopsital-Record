@@ -8,6 +8,7 @@ import { listDiseaseHistory, createDiseaseHistory } from '../controllers/disease
 import { listPregnancies, createPregnancy } from '../controllers/pregnancies.js';
 import { listVaccinations, batchAdminister } from '../controllers/vaccinations.js';
 import { listReferrals, createReferral, recordOutcome } from '../controllers/referrals.js';
+import { memberHealthCard } from '../controllers/healthCard.js';
 
 const router = Router();
 const staff   = requireRole('doctor', 'ground_staff', 'admin');
@@ -36,5 +37,8 @@ router.post('/:memberId/vaccinations/batch-administer', staff, batchAdminister);
 router.get('/:memberId/referrals',                        staff,   listReferrals);
 router.post('/:memberId/referrals',                       doctors, createReferral);
 router.patch('/:memberId/referrals/:referralId/outcome',  doctors, recordOutcome);
+
+// health card PDF
+router.get('/:id/health-card', staff, memberHealthCard);
 
 export default router;

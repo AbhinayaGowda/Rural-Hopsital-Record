@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext.jsx';
 import { useAuth } from './hooks/useAuth.js';
@@ -13,6 +14,13 @@ import AuditLogsPage from './pages/AuditLogsPage.jsx';
 import SearchPage from './pages/SearchPage.jsx';
 import AdminUsersPage from './pages/AdminUsersPage.jsx';
 import ReportsPage from './pages/ReportsPage.jsx';
+
+// Lazy-loaded pages (code-split to keep initial bundle small)
+const HouseholdMapPage  = lazy(() => import('./pages/HouseholdMapPage.jsx'));
+const FieldVisitsPage   = lazy(() => import('./pages/FieldVisitsPage.jsx'));
+const OutbreaksPage     = lazy(() => import('./pages/OutbreaksPage.jsx'));
+const MyPregnanciesPage = lazy(() => import('./pages/MyPregnanciesPage.jsx'));
+const CsvImportPage     = lazy(() => import('./pages/CsvImportPage.jsx'));
 
 function ProtectedRoute({ children }) {
   const { session, loading } = useAuth();
@@ -30,11 +38,24 @@ function AdminRoute({ children }) {
   return <Layout>{children}</Layout>;
 }
 
+function DoctorRoute({ children }) {
+  const { session, loading } = useAuth();
+  const { isDoctor, isAdmin } = useRole();
+  if (loading) return <Spinner center size="lg" />;
+  if (!session) return <Navigate to="/login" replace />;
+  if (!isDoctor && !isAdmin) return <Navigate to="/households" replace />;
+  return <Layout>{children}</Layout>;
+}
+
 function PublicRoute({ children }) {
   const { session, loading } = useAuth();
   if (loading) return <Spinner center size="lg" />;
   if (session) return <Navigate to="/households" replace />;
   return children;
+}
+
+function Lazy({ children }) {
+  return <Suspense fallback={<Spinner center size="lg" />}>{children}</Suspense>;
 }
 
 export default function App() {
@@ -44,14 +65,23 @@ export default function App() {
         <Routes>
           <Route path="/login" element={<PublicRoute><LoginPage /></PublicRoute>} />
           <Route path="/" element={<Navigate to="/households" replace />} />
-          <Route path="/households" element={<ProtectedRoute><HouseholdsPage /></ProtectedRoute>} />
+
+          <Route path="/households"     element={<ProtectedRoute><HouseholdsPage /></ProtectedRoute>} />
           <Route path="/households/:id" element={<ProtectedRoute><HouseholdDetailPage /></ProtectedRoute>} />
-          <Route path="/members/:id" element={<ProtectedRoute><MemberDetailPage /></ProtectedRoute>} />
-          <Route path="/search" element={<ProtectedRoute><SearchPage /></ProtectedRoute>} />
-          <Route path="/notifications" element={<ProtectedRoute><NotificationsPage /></ProtectedRoute>} />
-          <Route path="/audit-logs"   element={<AdminRoute><AuditLogsPage /></AdminRoute>} />
-          <Route path="/admin/users"   element={<AdminRoute><AdminUsersPage /></AdminRoute>} />
-          <Route path="/admin/reports" element={<AdminRoute><ReportsPage /></AdminRoute>} />
+          <Route path="/members/:id"    element={<ProtectedRoute><MemberDetailPage /></ProtectedRoute>} />
+          <Route path="/search"         element={<ProtectedRoute><SearchPage /></ProtectedRoute>} />
+          <Route path="/notifications"  element={<ProtectedRoute><NotificationsPage /></ProtectedRoute>} />
+
+          <Route path="/my-pregnancies" element={<DoctorRoute><Lazy><MyPregnanciesPage /></Lazy></DoctorRoute>} />
+          <Route path="/field-visits"   element={<ProtectedRoute><Lazy><FieldVisitsPage /></Lazy></ProtectedRoute>} />
+
+          <Route path="/admin/households/map" element={<AdminRoute><Lazy><HouseholdMapPage /></Lazy></AdminRoute>} />
+          <Route path="/admin/outbreaks"      element={<AdminRoute><Lazy><OutbreaksPage /></Lazy></AdminRoute>} />
+          <Route path="/admin/import"         element={<AdminRoute><Lazy><CsvImportPage /></Lazy></AdminRoute>} />
+          <Route path="/admin/users"          element={<AdminRoute><AdminUsersPage /></AdminRoute>} />
+          <Route path="/admin/reports"        element={<AdminRoute><ReportsPage /></AdminRoute>} />
+          <Route path="/audit-logs"           element={<AdminRoute><AuditLogsPage /></AdminRoute>} />
+
           <Route path="*" element={<Navigate to="/households" replace />} />
         </Routes>
       </AuthProvider>

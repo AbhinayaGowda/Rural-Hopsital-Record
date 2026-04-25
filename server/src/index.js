@@ -4,6 +4,7 @@ import express from 'express';
 import cors from 'cors';
 import { errorHandler } from './middleware/errorHandler.js';
 import apiRouter from './routes/index.js';
+import { startNotificationWorker } from './workers/notificationWorker.js';
 
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -28,4 +29,5 @@ app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
+  startNotificationWorker();
 });

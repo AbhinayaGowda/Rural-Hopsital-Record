@@ -12,6 +12,7 @@ import locationsRouter from './locations.js';
 import searchRouter    from './search.js';
 import adminRouter     from './admin.js';
 import reportsRouter   from './reports.js';
+import fieldVisitsRouter from './fieldVisits.js';
 
 const router = Router();
 
@@ -28,5 +29,6 @@ router.use('/locations',    locationsRouter);
 router.use('/search',      searchRouter);
 router.use('/admin',       adminRouter);
 router.use('/reports',     reportsRouter);
+router.use('/field-visits', fieldVisitsRouter);
 
 export default router;

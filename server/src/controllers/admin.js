@@ -81,3 +81,9 @@ export async function removeVillageAssignment(req, res) {
   await svc.removeVillageAssignment(req.params.id, req.params.villageId);
   res.json({ data: { success: true }, error: null });
 }
+
+export async function detectOutbreaks(req, res) {
+  const days = req.query.days ? parseInt(req.query.days, 10) : 7;
+  const data = await svc.detectOutbreaks(days);
+  res.json({ data, error: null });
+}

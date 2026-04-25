@@ -16,6 +16,7 @@ export default function MemberForm({ initial, isFirst, onSubmit, loading, error,
     is_head:         initial?.is_head          ?? (isFirst ? true : false),
     contact_number:  initial?.contact_number   ?? '',
     aadhaar:         '',
+    abha_id:         initial?.abha_id ?? '',
   });
 
   const set = (k) => (e) => {
@@ -33,6 +34,7 @@ export default function MemberForm({ initial, isFirst, onSubmit, loading, error,
     payload.is_head = f.is_head;
     if (f.contact_number)  payload.contact_number  = f.contact_number;
     if (f.aadhaar)         payload.aadhaar         = f.aadhaar;
+    if (f.abha_id)         payload.abha_id         = f.abha_id;
     onSubmit(payload);
   };
 
@@ -59,6 +61,7 @@ export default function MemberForm({ initial, isFirst, onSubmit, loading, error,
       </div>
 
       <Input id="aadhaar" label="Aadhaar Number" value={f.aadhaar} onChange={set('aadhaar')} placeholder="12-digit number (optional)" maxLength={12} pattern="\d{12}" />
+      <Input id="abha_id" label="ABHA ID (optional)" value={f.abha_id} onChange={set('abha_id')} placeholder="Ayushman Bharat Health Account ID" />
 
       <label className={styles.checkRow}>
         <input type="checkbox" checked={f.is_head} onChange={set('is_head')} />

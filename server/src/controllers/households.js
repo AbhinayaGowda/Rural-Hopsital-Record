@@ -7,6 +7,7 @@ import {
   migrateHouseholdSchema,
 } from '../../../shared/schemas/households.js';
 import * as svc from '../services/households.js';
+import { findSimilarHouseholds } from '../services/duplicateDetection.js';
 
 export async function list(req, res) {
   const query = validate(searchHouseholdsSchema, req.query);
@@ -48,4 +49,24 @@ export async function migrate(req, res) {
   svc.assertHouseholdInScope(household, req.locationScope);
   await svc.migrateHousehold(req.params.id, migrated_date, req.profile.id);
   res.json({ data: { success: true }, error: null });
+}
+
+export async function checkDuplicates(req, res) {
+  const { village, head_name } = req.query;
+  const data = await findSimilarHouseholds({ village, headName: head_name });
+  res.json({ data, error: null });
+}
+
+export async function listForMap(req, res) {
+  const { data, error } = await import('../lib/supabaseAdmin.js').then(({ supabaseAdmin }) =>
+    supabaseAdmin
+      .from('households')
+      .select('id, malaria_number, village, latitude, longitude, status')
+      .not('latitude', 'is', null)
+      .not('longitude', 'is', null)
+      .eq('status', 'active')
+      .limit(500)
+  );
+  if (error) return res.status(500).json({ data: null, error: { code: 'INTERNAL', message: error.message } });
+  res.json({ data, error: null });
 }

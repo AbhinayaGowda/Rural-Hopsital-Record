@@ -1,0 +1,92 @@
+{
+  "nav": {
+    "households": "Households",
+    "search": "Person Search",
+    "notifications": "Notifications",
+    "users": "Users",
+    "reports": "Reports",
+    "auditLogs": "Audit Logs",
+    "householdMap": "Household Map",
+    "fieldVisits": "Field Visits",
+    "outbreaks": "Outbreaks"
+  },
+  "common": {
+    "save": "Save changes",
+    "cancel": "Cancel",
+    "loading": "Loading…",
+    "noData": "No records found.",
+    "required": "Required",
+    "optional": "Optional",
+    "submit": "Submit",
+    "create": "Create",
+    "edit": "Edit",
+    "delete": "Delete",
+    "download": "Download",
+    "upload": "Upload",
+    "search": "Search",
+    "filter": "Filter",
+    "reset": "Reset"
+  },
+  "household": {
+    "title": "Household",
+    "malariaNumber": "Malaria Number",
+    "village": "Village",
+    "district": "District",
+    "state": "State",
+    "pincode": "Pincode",
+    "address": "Address",
+    "notes": "Notes",
+    "status": "Status",
+    "head": "Head of household",
+    "members": "Members",
+    "location": "Location",
+    "healthCard": "Download Health Card"
+  },
+  "member": {
+    "title": "Member",
+    "fullName": "Full name",
+    "dob": "Date of birth",
+    "gender": "Gender",
+    "phone": "Phone",
+    "aadhaar": "Aadhaar",
+    "abhaId": "ABHA ID",
+    "healthId": "Health ID",
+    "status": "Status",
+    "relation": "Relation to head",
+    "healthCard": "Download Health Card"
+  },
+  "pregnancy": {
+    "title": "Pregnancy",
+    "lmpDate": "Last Menstrual Period",
+    "edd": "Expected Due Date (ref)",
+    "riskLevel": "Risk Level",
+    "trimester": "Trimester",
+    "status": "Status",
+    "complications": "Complications",
+    "markDelivered": "Mark Delivered",
+    "markTerminated": "Mark Terminated"
+  },
+  "visit": {
+    "title": "Doctor Visit",
+    "date": "Visit date",
+    "symptoms": "Symptoms",
+    "diagnosis": "Diagnosis",
+    "prescription": "Prescription",
+    "followUp": "Follow-up date",
+    "notes": "Notes"
+  },
+  "notification": {
+    "title": "Notifications",
+    "markRead": "Mark as read",
+    "noNew": "No new notifications"
+  },
+  "fieldVisit": {
+    "title": "Field Visit",
+    "logVisit": "Log Visit",
+    "village": "Village visited",
+    "householdsUpdated": "Households updated",
+    "membersAdded": "Members added",
+    "visitedAt": "Visit time",
+    "notes": "Notes"
+  }
+}

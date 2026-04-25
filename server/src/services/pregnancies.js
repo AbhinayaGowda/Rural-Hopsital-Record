@@ -1,6 +1,7 @@
 import { supabaseAdmin } from '../lib/supabaseAdmin.js';
 import { AppError } from '../lib/AppError.js';
 import { logAudit } from './audit.js';
+import { scheduleNotification } from './notifications.js';
 
 const PREG_COLS = 'id, member_id, lmp_date, expected_due_date, actual_delivery_date, risk_level, status, notes, registered_at, assigned_doctor_id, assigned_staff_id, complications, risk_factors, missed_checkup_count, created_at, updated_at';
 
@@ -92,7 +93,39 @@ export async function createCheckup(pregnancyId, payload, actorId) {
     .single();
   if (error) throw new AppError('INTERNAL', error.message, 500);
   await logAudit({ actorId, action: 'insert', tableName: 'pregnancy_checkups', recordId: data.id, newData: data });
+
+  // Schedule reminder 2 days before the next checkup
+  if (data.next_checkup_date) {
+    const reminderDate = new Date(data.next_checkup_date);
+    reminderDate.setDate(reminderDate.getDate() - 2);
+    if (reminderDate > new Date()) {
+      await scheduleNotification({
+        recipientUserId:   actorId,
+        type:              'checkup_reminder',
+        message:           `Upcoming pregnancy checkup scheduled for ${data.next_checkup_date}.`,
+        scheduledFor:      reminderDate.toISOString(),
+        relatedEntityType: 'pregnancy_checkup',
+        relatedEntityId:   data.id,
+      }).catch(() => {});
+    }
+  }
+
   return data;
+}
+
+export async function listAllPregnancies({ assignedDoctorId, status, riskLevel, limit, offset }) {
+  let q = supabaseAdmin
+    .from('pregnancies')
+    .select(PREG_COLS, { count: 'exact' })
+    .order('created_at', { ascending: false });
+
+  if (assignedDoctorId) q = q.eq('assigned_doctor_id', assignedDoctorId);
+  if (status)           q = q.eq('status', status);
+  if (riskLevel)        q = q.eq('risk_level', riskLevel);
+
+  const { data, count, error } = await q.range(offset, offset + limit - 1);
+  if (error) throw new AppError('INTERNAL', error.message, 500);
+  return { items: data.map(addTrimester), total: count, limit, offset };
 }
 
 export async function registerDelivery(pregnancyId, newbornData, actorId) {

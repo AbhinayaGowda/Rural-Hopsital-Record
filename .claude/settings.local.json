@@ -24,7 +24,8 @@
       "Bash(node --input-type=module)",
       "Bash(npx --yes acorn --ecma2020 --module src/features/referrals/ReferralList.jsx)",
       "Bash(npx acorn *)",
-      "Bash(xargs grep *)"
+      "Bash(xargs grep *)",
+      "Bash(npm install *)"
     ]
   },
   "enabledMcpjsonServers": [
