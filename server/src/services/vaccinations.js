@@ -2,14 +2,15 @@ import { supabaseAdmin } from '../lib/supabaseAdmin.js';
 import { AppError } from '../lib/AppError.js';
 import { logAudit } from './audit.js';
 
-const COLS = 'id, member_id, vaccine_code, scheduled_date, administered_date, status, administered_by, notes, created_at, updated_at';
+const COLS = 'id, member_id, vaccine_code, vaccine_name, scheduled_date, administered_date, next_dose_date, status, administered_by, notes, created_at, updated_at';
 
 export async function listVaccinations(memberId, { limit, offset }) {
   const { data, count, error } = await supabaseAdmin
     .from('vaccinations')
     .select(COLS, { count: 'exact' })
     .eq('member_id', memberId)
-    .order('scheduled_date', { ascending: true })
+    .order('administered_date', { ascending: false, nullsFirst: false })
+    .order('scheduled_date',   { ascending: true,  nullsFirst: false })
     .range(offset, offset + limit - 1);
   if (error) throw new AppError('INTERNAL', error.message, 500);
   return { items: data, total: count, limit, offset };
@@ -49,6 +50,25 @@ export async function administerVaccination(id, { administered_date, notes }, ac
     oldData: { status: existing.status },
     newData: { status: 'completed', administered_date, administered_by: actorId },
   });
+  return data;
+}
+
+export async function createVaccination(memberId, { vaccine_name, administered_date, next_dose_date, notes }, actorId) {
+  const { data, error } = await supabaseAdmin
+    .from('vaccinations')
+    .insert({
+      member_id:         memberId,
+      vaccine_name,
+      administered_date,
+      next_dose_date:    next_dose_date ?? null,
+      notes:             notes ?? null,
+      status:            'completed',
+      administered_by:   actorId,
+    })
+    .select(COLS)
+    .single();
+  if (error) throw new AppError('INTERNAL', error.message, 500);
+  await logAudit({ actorId, action: 'insert', tableName: 'vaccinations', recordId: data.id, newData: data });
   return data;
 }
 

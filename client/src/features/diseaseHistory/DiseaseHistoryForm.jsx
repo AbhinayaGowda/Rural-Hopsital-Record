@@ -82,8 +82,7 @@ export default function DiseaseHistoryForm({ memberId, onSuccess, onCancel }) {
               <li key={c.id} className={condStyles.item} onMouseDown={() => selectCondition(c)}>
                 <span className={condStyles.code}>{c.code}</span>
                 <span className={condStyles.name}>{c.name}</span>
-                {c.risk_pregnancy && <span className={condStyles.tag}>⚠ pregnancy</span>}
-                {c.is_chronic     && <span className={condStyles.tag}>chronic</span>}
+                {c.is_chronic && <span className={condStyles.tag}>chronic</span>}
               </li>
             ))}
           </ul>

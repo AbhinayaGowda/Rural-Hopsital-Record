@@ -18,6 +18,12 @@ export const locationsApi = {
     return apiFetch(`/locations/villages?${params}`);
   },
 
+  createVillage: ({ districtId, name, pincode } = {}) =>
+    apiFetch('/locations/villages', {
+      method: 'POST',
+      body: JSON.stringify({ district_id: districtId, name, pincode }),
+    }),
+
   medicalConditions: ({ q, category, limit = 50 } = {}) => {
     const params = new URLSearchParams();
     if (q)        params.set('q', q);

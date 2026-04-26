@@ -34,6 +34,11 @@ export async function addVillage(req, res) {
   res.status(201).json({ data, error: null });
 }
 
+export async function verifyVillage(req, res) {
+  const data = await svc.setVillageVerified(req.params.id, req.body.verified !== false);
+  res.json({ data, error: null });
+}
+
 export async function getMedicalConditions(req, res) {
   const data = await svc.listMedicalConditions({
     q:        req.query.q,

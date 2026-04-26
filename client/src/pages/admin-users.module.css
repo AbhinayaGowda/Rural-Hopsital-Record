@@ -79,7 +79,17 @@
 .pwRow > :first-child { flex: 1; }
 
 /* Assign panel */
-.assignPanel { display: flex; flex-direction: column; }
+.assignPanel { display: flex; flex-direction: column; gap: var(--space-4); }
+
+.assignNote {
+  font-size: 0.8125rem;
+  color: var(--color-muted);
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: var(--radius-sm);
+  padding: var(--space-2) var(--space-3);
+  margin: 0;
+}
 
 .assignCols {
   display: grid;
@@ -87,7 +97,9 @@
   gap: var(--space-6);
 }
 
-.assignCol { display: flex; flex-direction: column; gap: var(--space-2); }
+.assignCol { display: flex; flex-direction: column; gap: var(--space-3); }
+
+.assignTagList { display: flex; flex-direction: column; gap: var(--space-1); min-height: 32px; }
 
 .assignTag {
   display: flex;
@@ -100,6 +112,10 @@
   color: var(--color-text);
 }
 
+.tagSub { color: var(--color-muted); font-size: 0.8125rem; }
+
+.emptyHint { font-size: 0.8125rem; color: var(--color-muted); font-style: italic; margin: 0; }
+
 .removeBtn {
   background: none;
   border: none;
@@ -108,9 +124,24 @@
   font-size: 1rem;
   line-height: 1;
   padding: 0 2px;
+  flex-shrink: 0;
 }
 
 .removeBtn:hover { color: var(--color-danger); }
+
+.addForm { display: flex; flex-direction: column; gap: var(--space-2); border-top: 1px solid #e5e7eb; padding-top: var(--space-3); }
+
+.villagePreview {
+  font-size: 0.8125rem;
+  color: var(--color-primary);
+  margin: 0;
+  font-weight: 500;
+}
+
+.successMsg { color: var(--color-success); font-size: 0.8125rem; margin: 0; }
+.errorMsg   { color: var(--color-danger);  font-size: 0.8125rem; margin: 0; }
+
+.assignHint { font-size: 0.75rem; color: var(--color-muted); margin: 0; font-style: italic; }
 
 @media (max-width: 600px) {
   .assignCols { grid-template-columns: 1fr; }

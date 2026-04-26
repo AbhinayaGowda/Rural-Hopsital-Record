@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import PropTypes from 'prop-types';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '../hooks/useAuth.js';
 import { useDebounce } from '../hooks/useDebounce.js';
@@ -84,7 +85,9 @@ export default function AdminUsersPage() {
                   </td>
                   <td className={styles.actions}>
                     <Button variant="ghost" size="sm" onClick={() => setEditUser(u)}>Edit</Button>
-                    <Button variant="ghost" size="sm" onClick={() => setAssignUser(u)}>Locations</Button>
+                    {u.role !== 'admin' && (
+                      <Button variant="ghost" size="sm" onClick={() => setAssignUser(u)}>Locations</Button>
+                    )}
                     <ToggleActiveButton user={u} onDone={() => qc.invalidateQueries({ queryKey: ['admin-users'] })} />
                   </td>
                 </tr>
@@ -212,88 +215,76 @@ function EditUserForm({ user, onSuccess, onCancel }) {
   );
 }
 
+// ── AssignLocationsPanel ─────────────────────────────────────
+
 function AssignLocationsPanel({ userId, onClose }) {
   const qc = useQueryClient();
-  const [stateId, setStateId]     = useState('');
-  const [districtId, setDistrictId] = useState('');
-  const [villageId, setVillageId]   = useState('');
-  const [villageQ, setVillageQ]     = useState('');
-  const dVq = useDebounce(villageQ, 300);
 
   const { data: assignments, isLoading } = useQuery({
     queryKey: ['user-assignments', userId],
     queryFn: () => adminApi.getAssignments(userId),
   });
 
-  const { data: states  = [] } = useQuery({ queryKey: ['states'],                     queryFn: () => locationsApi.states(),                              staleTime: Infinity });
-  const { data: districts = [] } = useQuery({ queryKey: ['districts', stateId],        queryFn: () => locationsApi.districts(stateId || undefined),       enabled: !!stateId, staleTime: Infinity });
-  const { data: villages  = [] } = useQuery({ queryKey: ['villages', districtId, dVq], queryFn: () => locationsApi.villages({ districtId, q: dVq || undefined }), enabled: !!districtId });
-
   const invalidate = () => qc.invalidateQueries({ queryKey: ['user-assignments', userId] });
 
-  const addDist  = useMutation({ mutationFn: () => adminApi.addDistrict(userId, districtId), onSuccess: invalidate });
-  const addVill  = useMutation({ mutationFn: () => adminApi.addVillage(userId, villageId),   onSuccess: invalidate });
-  const remDist  = useMutation({ mutationFn: (did) => adminApi.removeDistrict(userId, did),  onSuccess: invalidate });
-  const remVill  = useMutation({ mutationFn: (vid) => adminApi.removeVillage(userId, vid),   onSuccess: invalidate });
+  const remDist = useMutation({ mutationFn: (did) => adminApi.removeDistrict(userId, did), onSuccess: invalidate });
+  const remVill = useMutation({ mutationFn: (vid) => adminApi.removeVillage(userId, vid),  onSuccess: invalidate });
 
   if (isLoading) return <Spinner center />;
 
+  const districts = assignments?.districts ?? [];
+  const villages  = assignments?.villages  ?? [];
+
   return (
     <div className={styles.assignPanel}>
-      <div className={styles.assignCols}>
-        {/* Current assignments */}
-        <div className={styles.assignCol}>
-          <p className={styles.sectionLabel}>Current District Assignments</p>
-          {assignments?.districts?.length === 0 && <p className={styles.muted}>None</p>}
-          {assignments?.districts?.map(a => (
-            <div key={a.id} className={styles.assignTag}>
-              <span>{a.districts?.states?.code} — {a.districts?.name}</span>
-              <button className={styles.removeBtn} onClick={() => remDist.mutate(a.district_id)}>×</button>
-            </div>
-          ))}
+      <p className={styles.assignNote}>
+        Assign one or more districts or villages. Non-admin users can only see households within their assigned locations.
+        You can add as many as needed.
+      </p>
 
-          <p className={styles.sectionLabel} style={{ marginTop: 16 }}>Current Village Assignments</p>
-          {assignments?.villages?.length === 0 && <p className={styles.muted}>None</p>}
-          {assignments?.villages?.map(a => (
-            <div key={a.id} className={styles.assignTag}>
-              <span>{a.villages?.name} ({a.villages?.districts?.name})</span>
-              <button className={styles.removeBtn} onClick={() => remVill.mutate(a.village_id)}>×</button>
-            </div>
-          ))}
+      <div className={styles.assignCols}>
+        {/* ── District assignments ── */}
+        <div className={styles.assignCol}>
+          <p className={styles.sectionLabel}>Districts ({districts.length})</p>
+
+          <div className={styles.assignTagList}>
+            {districts.length === 0 && <p className={styles.emptyHint}>No districts assigned yet.</p>}
+            {districts.map(a => (
+              <div key={a.id} className={styles.assignTag}>
+                <span>
+                  <strong>{a.districts?.name}</strong>
+                  {a.districts?.states && <span className={styles.tagSub}> — {a.districts.states.name}</span>}
+                </span>
+                <button className={styles.removeBtn} onClick={() => remDist.mutate(a.district_id)} title="Remove">×</button>
+              </div>
+            ))}
+          </div>
+
+          <AddDistrictForm userId={userId} onAdded={invalidate} />
         </div>
 
-        {/* Add assignment */}
+        {/* ── Village assignments ── */}
         <div className={styles.assignCol}>
-          <p className={styles.sectionLabel}>Add District</p>
-          <Select value={stateId} onChange={e => { setStateId(e.target.value); setDistrictId(''); }}>
-            <option value="">Select state…</option>
-            {states.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
-          </Select>
-          {stateId && (
-            <>
-              <Select value={districtId} onChange={e => setDistrictId(e.target.value)}>
-                <option value="">Select district…</option>
-                {districts.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
-              </Select>
-              <Button size="sm" disabled={!districtId} loading={addDist.isPending} onClick={() => addDist.mutate()}>
-                Assign District
-              </Button>
-            </>
-          )}
+          <p className={styles.sectionLabel}>Villages ({villages.length})</p>
 
-          <p className={styles.sectionLabel} style={{ marginTop: 16 }}>Add Village</p>
-          {stateId && districtId && (
-            <>
-              <Input placeholder="Search village…" value={villageQ} onChange={e => setVillageQ(e.target.value)} />
-              <Select value={villageId} onChange={e => setVillageId(e.target.value)}>
-                <option value="">Select village…</option>
-                {villages.map(v => <option key={v.id} value={v.id}>{v.name}</option>)}
-              </Select>
-              <Button size="sm" disabled={!villageId} loading={addVill.isPending} onClick={() => addVill.mutate()}>
-                Assign Village
-              </Button>
-            </>
-          )}
+          <div className={styles.assignTagList}>
+            {villages.length === 0 && <p className={styles.emptyHint}>No villages assigned yet.</p>}
+            {villages.map(a => (
+              <div key={a.id} className={styles.assignTag}>
+                <span>
+                  <strong>{a.villages?.name}</strong>
+                  {a.villages?.districts && <span className={styles.tagSub}> — {a.villages.districts.name}</span>}
+                </span>
+                <button className={styles.removeBtn} onClick={() => remVill.mutate(a.village_id)} title="Remove">×</button>
+              </div>
+            ))}
+          </div>
+
+          <AddVillageForm
+            userId={userId}
+            assignedVillageIds={villages.map(v => v.village_id)}
+            onAdded={invalidate}
+          />
         </div>
       </div>
 
@@ -303,3 +294,118 @@ function AssignLocationsPanel({ userId, onClose }) {
     </div>
   );
 }
+
+AssignLocationsPanel.propTypes = { userId: PropTypes.string.isRequired, onClose: PropTypes.func.isRequired };
+
+function AddDistrictForm({ userId, onAdded }) {
+  const [stateId,    setStateId]    = useState('');
+  const [districtId, setDistrictId] = useState('');
+  const [msg, setMsg] = useState('');
+
+  const { data: states = [] }    = useQuery({ queryKey: ['states'],             queryFn: () => locationsApi.states(),                staleTime: Infinity });
+  const { data: districts = [] } = useQuery({ queryKey: ['districts', stateId], queryFn: () => locationsApi.districts(stateId),       staleTime: Infinity, enabled: !!stateId });
+
+  const mut = useMutation({
+    mutationFn: () => adminApi.addDistrict(userId, districtId),
+    onSuccess: () => {
+      setDistrictId('');
+      setMsg('District assigned.');
+      onAdded();
+      setTimeout(() => setMsg(''), 2000);
+    },
+    onError: (e) => setMsg(e.message),
+  });
+
+  return (
+    <div className={styles.addForm}>
+      <Select value={stateId} onChange={e => { setStateId(e.target.value); setDistrictId(''); }}>
+        <option value="">Select state…</option>
+        {states.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+      </Select>
+      {stateId && (
+        <Select value={districtId} onChange={e => setDistrictId(e.target.value)}>
+          <option value="">Select district…</option>
+          {districts.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
+        </Select>
+      )}
+      <Button size="sm" disabled={!districtId} loading={mut.isPending} onClick={() => mut.mutate()}>
+        + Assign District
+      </Button>
+      {msg && <p className={msg.includes('assigned') ? styles.successMsg : styles.errorMsg}>{msg}</p>}
+    </div>
+  );
+}
+
+AddDistrictForm.propTypes = { userId: PropTypes.string.isRequired, onAdded: PropTypes.func.isRequired };
+
+function AddVillageForm({ userId, assignedVillageIds, onAdded }) {
+  const [q, setQ]               = useState('');
+  const [villageId, setVillageId] = useState('');
+  const [msg, setMsg]             = useState('');
+  const dq = useDebounce(q, 300);
+
+  // Global village search — no district required
+  const { data: results = [], isFetching } = useQuery({
+    queryKey: ['village-search-assign', dq],
+    queryFn: () => locationsApi.villages({ q: dq, limit: 20 }),
+    enabled: dq.length >= 2,
+  });
+
+  const mut = useMutation({
+    mutationFn: () => adminApi.addVillage(userId, villageId),
+    onSuccess: () => {
+      setVillageId('');
+      setQ('');
+      setMsg('Village assigned.');
+      onAdded();
+      setTimeout(() => setMsg(''), 2000);
+    },
+    onError: (e) => setMsg(e.message),
+  });
+
+  const selectedVillage = results.find(v => v.id === villageId);
+
+  return (
+    <div className={styles.addForm}>
+      <Input
+        placeholder="Search village by name…"
+        value={q}
+        onChange={e => { setQ(e.target.value); setVillageId(''); }}
+      />
+      {dq.length >= 2 && (
+        <Select value={villageId} onChange={e => setVillageId(e.target.value)}>
+          <option value="">
+            {isFetching ? 'Searching…' : results.length === 0 ? 'No villages found' : 'Pick a village…'}
+          </option>
+          {results.map(v => (
+            <option
+              key={v.id}
+              value={v.id}
+              disabled={assignedVillageIds.includes(v.id)}
+            >
+              {v.name}{v.districts?.name ? ` — ${v.districts.name}` : ''}
+              {assignedVillageIds.includes(v.id) ? ' (already assigned)' : ''}
+            </option>
+          ))}
+        </Select>
+      )}
+      {selectedVillage && (
+        <p className={styles.villagePreview}>
+          {selectedVillage.name}
+          {selectedVillage.districts?.name && ` · ${selectedVillage.districts.name}`}
+        </p>
+      )}
+      <Button size="sm" disabled={!villageId} loading={mut.isPending} onClick={() => mut.mutate()}>
+        + Assign Village
+      </Button>
+      {msg && <p className={msg.includes('assigned') ? styles.successMsg : styles.errorMsg}>{msg}</p>}
+      <p className={styles.assignHint}>You can assign as many villages as needed.</p>
+    </div>
+  );
+}
+
+AddVillageForm.propTypes = {
+  userId:             PropTypes.string.isRequired,
+  assignedVillageIds: PropTypes.arrayOf(PropTypes.string).isRequired,
+  onAdded:            PropTypes.func.isRequired,
+};

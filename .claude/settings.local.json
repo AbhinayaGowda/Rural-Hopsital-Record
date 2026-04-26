@@ -25,7 +25,10 @@
       "Bash(npx --yes acorn --ecma2020 --module src/features/referrals/ReferralList.jsx)",
       "Bash(npx acorn *)",
       "Bash(xargs grep *)",
-      "Bash(npm install *)"
+      "Bash(npm install *)",
+      "Bash(node -e \"const p=require\\('./package.json'\\); console.log\\(p.dependencies['@tanstack/react-query']\\)\")",
+      "Bash(node --check src/services/locations.js src/services/vaccinations.js src/routes/members.js src/controllers/vaccinations.js)",
+      "Bash(node --check shared/schemas/households.js shared/schemas/vaccinations.js)"
     ]
   },
   "enabledMcpjsonServers": [

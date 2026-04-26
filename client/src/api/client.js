@@ -41,3 +41,33 @@ export async function apiFetch(path, options = {}) {
 
   return body.data;
 }
+
+/**
+ * Like apiFetch but returns a Blob — used for PDF/binary endpoints (health cards).
+ * Triggers a browser download automatically.
+ */
+export async function apiFetchDownload(path, filename) {
+  const { data: { session } } = await supabase.auth.getSession();
+  const token = session?.access_token;
+
+  const res = await fetch(`${BASE_URL}${path}`, {
+    headers: { ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+  });
+
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}));
+    const err = new Error(body?.error?.message ?? 'Download failed');
+    err.status = res.status;
+    throw err;
+  }
+
+  const blob = await res.blob();
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}

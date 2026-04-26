@@ -69,14 +69,12 @@ export default function HouseholdDetailPage() {
             {isGroundStaff && (
               <Button variant="secondary" size="sm" onClick={() => setShowEdit(true)}>Edit</Button>
             )}
-            <a
-              href={householdsApi.healthCard(id)}
-              target="_blank"
-              rel="noreferrer"
-              style={{ fontSize: 13, color: 'var(--color-primary)', textDecoration: 'none' }}
+            <button
+              onClick={() => householdsApi.healthCard(id)}
+              style={{ fontSize: 13, color: 'var(--color-primary)', background: 'none', border: 'none', cursor: 'pointer', padding: 0, whiteSpace: 'nowrap' }}
             >
               ↓ Health Card
-            </a>
+            </button>
           </div>
         </div>
 

@@ -6,6 +6,7 @@ import { pregnanciesApi } from '../../api/pregnancies.js';
 import Badge from '../../components/Badge.jsx';
 import Spinner from '../../components/Spinner.jsx';
 import PregnancyOutcomeActions from './PregnancyOutcomeActions.jsx';
+import PregnancyCheckups from './PregnancyCheckups.jsx';
 import { fmtDate } from '../../utils/date.js';
 import { statusColor } from '../../utils/format.js';
 import styles from '../form.module.css';
@@ -70,7 +71,12 @@ export default function PregnancyList({ memberId }) {
                 </div>
               )}
 
-              {/* Action buttons — only doctors, only active pregnancies */}
+              {/* Checkup history + log checkup (doctors only) */}
+              {isDoctor && (
+                <PregnancyCheckups pregnancyId={p.id} isActive={p.status === 'active'} />
+              )}
+
+              {/* Outcome actions — only doctors, only active pregnancies */}
               {isDoctor && (
                 <PregnancyOutcomeActions pregnancy={p} memberId={memberId} />
               )}

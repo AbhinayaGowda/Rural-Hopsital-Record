@@ -3,12 +3,14 @@
     "households": "Households",
     "search": "Person Search",
     "notifications": "Notifications",
-    "users": "Users",
-    "reports": "Reports",
-    "auditLogs": "Audit Logs",
-    "householdMap": "Household Map",
     "fieldVisits": "Field Visits",
-    "outbreaks": "Outbreaks"
+    "users": "Users",
+    "locations": "Locations",
+    "reports": "Reports",
+    "outbreaks": "Outbreaks",
+    "householdMap": "Household Map",
+    "csvImport": "CSV Import",
+    "auditLogs": "Audit Logs"
   },
   "common": {
     "save": "Save changes",

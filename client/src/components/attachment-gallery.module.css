@@ -1,0 +1,115 @@
+.wrap { margin-top: var(--space-4); }
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+}
+
+.label {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--color-text);
+}
+
+.uploadBtn {
+  margin-left: auto;
+  padding: 6px 14px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-primary);
+  background: transparent;
+  color: var(--color-primary);
+  font-size: 13px;
+  cursor: pointer;
+  font-weight: 500;
+}
+.uploadBtn:hover { background: rgba(37,99,235,0.06); }
+.uploadBtn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.hiddenInput { display: none; }
+
+.error {
+  color: var(--color-danger);
+  font-size: 13px;
+  margin-bottom: var(--space-2);
+}
+
+.grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.empty {
+  color: var(--color-muted);
+  font-size: 13px;
+  font-style: italic;
+}
+
+.card {
+  position: relative;
+  width: 120px;
+  border: 1px solid #e5e7eb;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: var(--color-surface);
+}
+
+.imgLink { display: block; }
+
+.thumb {
+  width: 120px;
+  height: 90px;
+  object-fit: cover;
+  display: block;
+}
+
+.docLink {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 90px;
+  text-decoration: none;
+  color: var(--color-muted);
+  gap: 4px;
+}
+
+.fileIcon { font-size: 32px; }
+
+.docName {
+  font-size: 11px;
+  text-align: center;
+  padding: 0 4px;
+  word-break: break-all;
+  color: var(--color-text);
+}
+
+.meta {
+  display: flex;
+  justify-content: space-between;
+  padding: 4px 6px;
+  font-size: 11px;
+  color: var(--color-muted);
+  border-top: 1px solid #e5e7eb;
+}
+
+.deleteBtn {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0,0,0,0.45);
+  color: #fff;
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.deleteBtn:hover { background: var(--color-danger); }

@@ -18,6 +18,7 @@ import PregnancyForm from '../features/pregnancies/PregnancyForm.jsx';
 import VaccinationList from '../features/vaccinations/VaccinationList.jsx';
 import ReferralList from '../features/referrals/ReferralList.jsx';
 import ReferralForm from '../features/referrals/ReferralForm.jsx';
+import AttachmentGallery from '../components/AttachmentGallery.jsx';
 import { fmtGender, fmtStatus, statusColor } from '../utils/format.js';
 import { fmtDate, calcAge } from '../utils/date.js';
 import styles from './member-detail.module.css';
@@ -87,14 +88,12 @@ export default function MemberDetailPage() {
             )}
           </div>
           <div className={styles.cardActions}>
-            <a
-              href={membersApi.healthCard(id)}
-              target="_blank"
-              rel="noreferrer"
-              style={{ fontSize: 13, color: 'var(--color-primary)', textDecoration: 'none', whiteSpace: 'nowrap' }}
+            <button
+              onClick={() => membersApi.healthCard(id)}
+              style={{ fontSize: 13, color: 'var(--color-primary)', background: 'none', border: 'none', cursor: 'pointer', padding: 0, whiteSpace: 'nowrap' }}
             >
               ↓ Health Card
-            </a>
+            </button>
             {isGroundStaff && (
               <Button variant="secondary" size="sm" onClick={() => setShowEdit(true)}>Edit</Button>
             )}
@@ -131,6 +130,7 @@ export default function MemberDetailPage() {
             {member.migrated_date && <InfoRow label="Migrated on" value={fmtDate(member.migrated_date)} />}
           </div>
         )}
+        {tab === 'Info' && <AttachmentGallery memberId={id} />}
 
         {tab === 'Visits' && (
           <>

@@ -5,7 +5,7 @@ import { applyLocationScope, isHouseholdObjectInScope } from '../middleware/scop
 
 const COLS = 'id, malaria_number, address_line, village, district, state, pincode, status, migrated_at, notes, created_by, head_member_id, state_id, district_id, village_id, latitude, longitude, location_accuracy_m, location_source, created_at, updated_at';
 
-export async function listHouseholds({ malaria_number, village, status, q, limit, offset }, scope) {
+export async function listHouseholds({ malaria_number, village, status, q, unclassified, limit, offset }, scope) {
   // Non-admin with no assignments → return nothing immediately
   if (scope && !scope.isAdmin && scope.districtIds.length === 0 && scope.villageIds.length === 0) {
     return { items: [], total: 0, limit, offset };
@@ -37,8 +37,9 @@ export async function listHouseholds({ malaria_number, village, status, q, limit
   if (malaria_number) query = query.ilike('malaria_number', `%${malaria_number}%`);
   if (village)        query = query.ilike('village', `%${village}%`);
   if (status)         query = query.eq('status', status);
+  if (unclassified)   query = query.is('district_id', null);
 
-  if (scope) query = applyLocationScope(query, scope);
+  if (scope && !unclassified) query = applyLocationScope(query, scope);
 
   // TODO: count: 'exact' becomes expensive past ~10k rows; switch to estimated count or cursor pagination if this table grows large
   const { data, count, error } = await query.range(offset, offset + limit - 1);

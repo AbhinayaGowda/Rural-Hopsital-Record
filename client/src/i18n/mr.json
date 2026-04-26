@@ -3,12 +3,14 @@
     "households": "कुटुंब",
     "search": "व्यक्ती शोध",
     "notifications": "सूचना",
-    "users": "वापरकर्ते",
-    "reports": "अहवाल",
-    "auditLogs": "ऑडिट नोंदी",
-    "householdMap": "कुटुंब नकाशा",
     "fieldVisits": "क्षेत्र भेटी",
-    "outbreaks": "साथीचे रोग"
+    "users": "वापरकर्ते",
+    "locations": "स्थाने",
+    "reports": "अहवाल",
+    "outbreaks": "साथीचे रोग",
+    "householdMap": "कुटुंब नकाशा",
+    "csvImport": "CSV आयात",
+    "auditLogs": "ऑडिट नोंदी"
   },
   "common": {
     "save": "बदल जतन करा",

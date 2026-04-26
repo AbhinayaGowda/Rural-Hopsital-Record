@@ -1,4 +1,4 @@
-import { apiFetch } from './client.js';
+import { apiFetch, apiFetchDownload } from './client.js';
 
 const qs = (p) => new URLSearchParams(Object.fromEntries(Object.entries(p).filter(([, v]) => v !== undefined && v !== ''))).toString();
 
@@ -13,5 +13,5 @@ export const householdsApi = {
   migrate:          (id, data)     => apiFetch(`/households/${id}/migrate`, { method: 'POST', body: JSON.stringify(data) }),
   listMembers:      (id, params)   => apiFetch(`/households/${id}/members?${qs(params)}`),
   addMember:        (id, data)     => apiFetch(`/households/${id}/members`, { method: 'POST', body: JSON.stringify(data) }),
-  healthCard:       (id)           => `${import.meta.env.VITE_API_BASE_URL}/households/${id}/health-card`,
+  healthCard:       (id)           => apiFetchDownload(`/households/${id}/health-card`, `household-card-${id}.pdf`),
 };

@@ -13,6 +13,7 @@ import NotificationsPage from './pages/NotificationsPage.jsx';
 import AuditLogsPage from './pages/AuditLogsPage.jsx';
 import SearchPage from './pages/SearchPage.jsx';
 import AdminUsersPage from './pages/AdminUsersPage.jsx';
+import AdminLocationsPage from './pages/AdminLocationsPage.jsx';
 import ReportsPage from './pages/ReportsPage.jsx';
 
 // Lazy-loaded pages (code-split to keep initial bundle small)
@@ -79,6 +80,7 @@ export default function App() {
           <Route path="/admin/outbreaks"      element={<AdminRoute><Lazy><OutbreaksPage /></Lazy></AdminRoute>} />
           <Route path="/admin/import"         element={<AdminRoute><Lazy><CsvImportPage /></Lazy></AdminRoute>} />
           <Route path="/admin/users"          element={<AdminRoute><AdminUsersPage /></AdminRoute>} />
+          <Route path="/admin/locations"      element={<AdminRoute><AdminLocationsPage /></AdminRoute>} />
           <Route path="/admin/reports"        element={<AdminRoute><ReportsPage /></AdminRoute>} />
           <Route path="/audit-logs"           element={<AdminRoute><AuditLogsPage /></AdminRoute>} />
 

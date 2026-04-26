@@ -10,27 +10,32 @@ import Badge from '../components/Badge.jsx';
 import Spinner from '../components/Spinner.jsx';
 import Modal from '../components/Modal.jsx';
 import HouseholdForm from '../features/households/HouseholdForm.jsx';
+import { useRole } from '../hooks/useRole.js';
 import { fmtStatus, statusColor } from '../utils/format.js';
 import styles from './households-page.module.css';
 
 export default function HouseholdsPage() {
   const { session } = useAuth();
+  const { isAdmin } = useRole();
   const qc = useQueryClient();
   const [search, setSearch] = useState('');
   const [village, setVillage] = useState('');
   const [status, setStatus] = useState('');
+  const [showUnclassified, setShowUnclassified] = useState(false);
   const [page, setPage] = useState(0);
   const [showNew, setShowNew] = useState(false);
   const limit = 20;
   const debouncedSearch = useDebounce(search);
 
-  const params = {
-    ...(debouncedSearch.length >= 2 ? { q: debouncedSearch } : {}),
-    ...(village ? { village } : {}),
-    ...(status ? { status } : {}),
-    limit,
-    offset: page * limit,
-  };
+  const params = showUnclassified
+    ? { unclassified: 'true', limit, offset: page * limit }
+    : {
+        ...(debouncedSearch.length >= 2 ? { q: debouncedSearch } : {}),
+        ...(village ? { village } : {}),
+        ...(status ? { status } : {}),
+        limit,
+        offset: page * limit,
+      };
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ['households', params],
@@ -57,7 +62,24 @@ export default function HouseholdsPage() {
         <Button onClick={() => setShowNew(true)}>+ New Household</Button>
       </div>
 
-      <div className={styles.filters}>
+      {isAdmin && (
+        <div className={styles.tabBar}>
+          <button
+            className={[styles.tabBtn, !showUnclassified ? styles.tabBtnActive : ''].join(' ')}
+            onClick={() => { setShowUnclassified(false); setPage(0); }}
+          >
+            All Households
+          </button>
+          <button
+            className={[styles.tabBtn, showUnclassified ? styles.tabBtnActive : ''].join(' ')}
+            onClick={() => { setShowUnclassified(true); setPage(0); }}
+          >
+            Unclassified {showUnclassified && total > 0 ? `(${total})` : ''}
+          </button>
+        </div>
+      )}
+
+      <div className={styles.filters} style={showUnclassified ? { display: 'none' } : {}}>
         <Input
           placeholder="Search by member name or malaria no…"
           value={search}

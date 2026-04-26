@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import multer from 'multer';
 import { authenticate } from '../middleware/authenticate.js';
 import { requireRole } from '../middleware/requireRole.js';
 import { scopeToUserLocations } from '../middleware/scopeToUserLocations.js';
@@ -6,9 +7,12 @@ import * as ctrl from '../controllers/members.js';
 import { listVisits, createVisit } from '../controllers/visits.js';
 import { listDiseaseHistory, createDiseaseHistory } from '../controllers/diseaseHistory.js';
 import { listPregnancies, createPregnancy } from '../controllers/pregnancies.js';
-import { listVaccinations, batchAdminister } from '../controllers/vaccinations.js';
+import { listVaccinations, create as createVaccination, batchAdminister } from '../controllers/vaccinations.js';
 import { listReferrals, createReferral, recordOutcome } from '../controllers/referrals.js';
 import { memberHealthCard } from '../controllers/healthCard.js';
+import { listMemberAttachments, uploadMemberAttachment, deleteAttachment } from '../controllers/attachments.js';
+
+const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 5 * 1024 * 1024 } });
 
 const router = Router();
 const staff   = requireRole('doctor', 'ground_staff', 'admin');
@@ -32,6 +36,7 @@ router.get('/:memberId/pregnancies',  staff,   listPregnancies);
 router.post('/:memberId/pregnancies', doctors, createPregnancy);
 
 router.get('/:memberId/vaccinations',                   staff, listVaccinations);
+router.post('/:memberId/vaccinations',                  staff, createVaccination);
 router.post('/:memberId/vaccinations/batch-administer', staff, batchAdminister);
 
 router.get('/:memberId/referrals',                        staff,   listReferrals);
@@ -40,5 +45,10 @@ router.patch('/:memberId/referrals/:referralId/outcome',  doctors, recordOutcome
 
 // health card PDF
 router.get('/:id/health-card', staff, memberHealthCard);
+
+// attachments
+router.get('/:memberId/attachments',                      staff,   listMemberAttachments);
+router.post('/:memberId/attachments', upload.single('file'), staff, uploadMemberAttachment);
+router.delete('/:memberId/attachments/:attachmentId',     staff,   deleteAttachment);
 
 export default router;

@@ -3,12 +3,14 @@
     "households": "परिवार",
     "search": "व्यक्ति खोज",
     "notifications": "सूचनाएं",
-    "users": "उपयोगकर्ता",
-    "reports": "रिपोर्ट",
-    "auditLogs": "ऑडिट लॉग",
-    "householdMap": "परिवार मानचित्र",
     "fieldVisits": "क्षेत्र दौरे",
-    "outbreaks": "प्रकोप"
+    "users": "उपयोगकर्ता",
+    "locations": "स्थान",
+    "reports": "रिपोर्ट",
+    "outbreaks": "प्रकोप",
+    "householdMap": "परिवार मानचित्र",
+    "csvImport": "CSV आयात",
+    "auditLogs": "ऑडिट लॉग"
   },
   "common": {
     "save": "परिवर्तन सहेजें",

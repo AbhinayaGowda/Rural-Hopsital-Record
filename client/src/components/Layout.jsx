@@ -1,5 +1,6 @@
 import { NavLink, useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../hooks/useAuth.js';
 import { useRole } from '../hooks/useRole.js';
 import { fmtRole } from '../utils/format.js';
@@ -10,6 +11,7 @@ export default function Layout({ children }) {
   const { profile, signOut } = useAuth();
   const { isAdmin, isDoctor } = useRole();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const handleSignOut = async () => {
     await signOut();
@@ -28,16 +30,16 @@ export default function Layout({ children }) {
 
         <nav className={styles.nav}>
           <NavLink to="/households"     className={link('/households')}>
-            <span className={styles.icon}>🏠</span> Households
+            <span className={styles.icon}>🏠</span> {t('nav.households')}
           </NavLink>
           <NavLink to="/search"         className={link('/search')}>
-            <span className={styles.icon}>🔍</span> Person Search
+            <span className={styles.icon}>🔍</span> {t('nav.search')}
           </NavLink>
           <NavLink to="/notifications"  className={link('/notifications')}>
-            <span className={styles.icon}>🔔</span> Notifications
+            <span className={styles.icon}>🔔</span> {t('nav.notifications')}
           </NavLink>
           <NavLink to="/field-visits"   className={link('/field-visits')}>
-            <span className={styles.icon}>📍</span> Field Visits
+            <span className={styles.icon}>📍</span> {t('nav.fieldVisits')}
           </NavLink>
 
           {(isDoctor || isAdmin) && (
@@ -50,22 +52,25 @@ export default function Layout({ children }) {
             <>
               <div className={styles.navDivider} />
               <NavLink to="/admin/users"          className={link('/admin/users')}>
-                <span className={styles.icon}>👥</span> Users
+                <span className={styles.icon}>👥</span> {t('nav.users')}
+              </NavLink>
+              <NavLink to="/admin/locations"      className={link('/admin/locations')}>
+                <span className={styles.icon}>🗾</span> Locations
               </NavLink>
               <NavLink to="/admin/reports"        className={link('/admin/reports')}>
-                <span className={styles.icon}>📊</span> Reports
+                <span className={styles.icon}>📊</span> {t('nav.reports')}
               </NavLink>
               <NavLink to="/admin/outbreaks"      className={link('/admin/outbreaks')}>
                 <span className={styles.icon}>⚠️</span> Outbreaks
               </NavLink>
               <NavLink to="/admin/households/map" className={link('/admin/households/map')}>
-                <span className={styles.icon}>🗺️</span> Household Map
+                <span className={styles.icon}>🗺️</span> {t('nav.householdMap')}
               </NavLink>
               <NavLink to="/admin/import"         className={link('/admin/import')}>
                 <span className={styles.icon}>📥</span> CSV Import
               </NavLink>
               <NavLink to="/audit-logs"           className={link('/audit-logs')}>
-                <span className={styles.icon}>📋</span> Audit Logs
+                <span className={styles.icon}>📋</span> {t('nav.auditLogs')}
               </NavLink>
             </>
           )}
